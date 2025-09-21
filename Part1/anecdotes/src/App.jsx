@@ -8,6 +8,26 @@ const Button = (props) => {
   )
 }
 
+const MostVote = ({votes, anecdotes}) => {
+    let maxIndex = 0;
+    for (let i = 1; i < votes.length; i++) {
+        if (votes[i] > votes[maxIndex]) {
+            maxIndex = i;
+        }
+    }
+    if (votes[maxIndex] === 0) {
+      return (
+        <p>Zero votes</p>
+      )
+    }
+    return (
+      <>
+        <p>{anecdotes[maxIndex]}</p>
+        <p>Has {votes[maxIndex]} votes</p>
+      </>
+    )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -22,7 +42,6 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(new Uint8Array(8))
-  const votesCopy = [...votes]
 
   const randomNote = () => setSelected(Math.floor(Math.random() * 8))
 
@@ -36,11 +55,15 @@ const App = () => {
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
-      <p>has {votes[selected]} votes</p>
+      <p>Has {votes[selected]} votes</p>
 
       <Button onClick={addVote} text='Vote'/>
       <Button onClick={randomNote} text='Next Anecdotes'/>
+
+      <h1>Anecdote with most votes</h1>
+      <MostVote votes={votes} anecdotes={anecdotes}/>
     </div>
   )
 }
