@@ -4,13 +4,7 @@ const Part = (props) => props.parts.map(part => <p key={part.id}>{part.name} {pa
 
 const Content = (props) => <div><Part parts={props.parts} /></div>
 
-const Total = (props) => {
-  let total = 0
-  props.parts.map(part => total += part.exercises)
-  return (
-    <h4>Total of {total} exercises</h4>
-  )
-}
+const Total = (props) => <h4>Total of {props.parts.reduce((s, p) => s + p.exercises, 0)} exercises</h4>
 
 const Course = (props) => {
   return (
