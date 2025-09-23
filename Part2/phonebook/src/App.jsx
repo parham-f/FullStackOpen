@@ -15,23 +15,6 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
   const [showAll, setShowAll] = useState(true)
 
-  const addPerson = (event) => {
-    event.preventDefault()
-
-    if(persons.some(person => person.name === newName)) {
-      setNewName('')
-      return alert(`${newName} is already added to phonebook`)
-    }
-
-    const personObject = {
-      name: newName,
-      number: newNumber
-    }
-    setPersons(persons.concat(personObject))
-    setNewName('')
-    setNewNumber('')
-  }
-
   const handleNameChange = (event) => setNewName(event.target.value)
   const handleNumberChange = (event) => setNewNumber(event.target.value)
   const handleFilterChange = (event) => {
@@ -51,7 +34,7 @@ const App = () => {
       <h2>PhoneBook</h2>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange}/>
       <h3>Add a new</h3>
-      <PersonForm addPerson={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
+      <PersonForm persons={persons} newName={newName} newNumber={newNumber} setPersons={setPersons} setNewName={setNewName} setNewNumber={setNewNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2> 
       <Persons personsToShow={personsToShow}/>
     </div>
