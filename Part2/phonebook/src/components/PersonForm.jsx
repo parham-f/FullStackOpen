@@ -5,22 +5,24 @@ const PersonForm = (props) => {
   const addPerson = (event) => {
     event.preventDefault()
 
-    if(props.persons.some(person => person.name === props.newName)) {
-      props.setNewName('')
-      props.setNewNumber('')
-      return alert(`${props.newName} is already added to phonebook`)
-    }
-
     const personObject = {
       name: props.newName,
       number: props.newNumber
     }
-
-    personService.create(personObject).then(returnedPerson => {
-      props.setPersons(props.persons.concat(returnedPerson))
-      props.setNewName('')
-      props.setNewNumber('')
-    })
+    if(props.persons.some(person => person.name === props.newName)) {
+      if(confirm(`${props.newName} is already added to phonebook, replace the old number with a new one?`)) {
+        const personToUpdate = props.persons.find(person => person.name === props.newName)               
+        personService.update(personToUpdate.id, personObject).then(() => {
+          props.setPersons(props.persons.filter(person => person.name === props.newName ? person.number = props.newNumber : person))
+        })
+      }
+    } else {
+      personService.create(personObject).then(returnedPerson => {
+        props.setPersons(props.persons.concat(returnedPerson))
+      })
+    }
+    props.setNewName('')
+    props.setNewNumber('')
   }
   return (
     <form onSubmit={addPerson}>
