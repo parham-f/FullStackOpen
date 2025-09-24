@@ -25,18 +25,17 @@ const App = () => {
     setShowAll(false)
     setNewFilter(event.target.value)
   }
-  const personsToShow = showAll 
-    ? persons 
-    : persons.filter(person => person.name.includes(newFilter))
 
   return (
     <div>
       <h2>PhoneBook</h2>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange}/>
       <h3>Add a new</h3>
-      <PersonForm persons={persons} newName={newName} newNumber={newNumber} setPersons={setPersons} setNewName={setNewName} setNewNumber={setNewNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
+      <PersonForm persons={persons} newName={newName} newNumber={newNumber} 
+                  setPersons={setPersons} setNewName={setNewName} setNewNumber={setNewNumber} 
+                  handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2> 
-      <Persons personsToShow={personsToShow}/>
+      <Persons persons={persons} showAll={showAll} newFilter={newFilter}/>
     </div>
   )
 }
