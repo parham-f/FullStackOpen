@@ -1,3 +1,5 @@
+import personService from '../services/personsServices'
+
 const PersonForm = (props) => {
 
   const addPerson = (event) => {
@@ -13,9 +15,12 @@ const PersonForm = (props) => {
       name: props.newName,
       number: props.newNumber
     }
-    props.setPersons(props.persons.concat(personObject))
-    props.setNewName('')
-    props.setNewNumber('')
+
+    personService.create(personObject).then(returnedPerson => {
+      props.setPersons(props.persons.concat(returnedPerson))
+      props.setNewName('')
+      props.setNewNumber('')
+    })
   }
   return (
     <form onSubmit={addPerson}>
