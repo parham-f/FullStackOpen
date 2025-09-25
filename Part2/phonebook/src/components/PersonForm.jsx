@@ -14,6 +14,7 @@ const PersonForm = (props) => {
         const personToUpdate = props.persons.find(person => person.name === props.newName)               
         personService.update(personToUpdate.id, personObject).then(() => {
           props.setPersons(props.persons.filter(person => person.name === props.newName ? person.number = props.newNumber : person))
+          props.setErrorColor('green')
           props.setErrorMessage(
             `${props.newName} updated!`
           )
@@ -21,10 +22,21 @@ const PersonForm = (props) => {
             props.setErrorMessage(null)
           }, 5000)
         })
+        .catch(error => {
+          props.setErrorColor('red')
+          props.setErrorMessage(
+            `Information of ${props.newName} has already been removed from server!`
+          )
+          setTimeout(() => {
+            props.setErrorMessage(null)
+          }, 5000)
+          props.setPersons(props.persons.filter(person => person.name !== props.newName))
+        })
       }
     } else {
       personService.create(personObject).then(returnedPerson => {
         props.setPersons(props.persons.concat(returnedPerson))
+        props.setErrorColor('green')
         props.setErrorMessage(
             `${props.newName} created!`
           )

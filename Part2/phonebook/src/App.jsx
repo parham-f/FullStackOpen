@@ -13,6 +13,7 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [errorColor, setErrorColor] = useState('')
 
   useEffect(() => {
     personService.getAll().then(initialPersons => setPersons(initialPersons))
@@ -34,11 +35,11 @@ const App = () => {
       <h2>PhoneBook</h2>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange}/>
       <h3>Add a new</h3>
-      <Notification message={errorMessage} />
+      <Notification message={errorMessage} color={errorColor}/>
       <PersonForm persons={persons} newName={newName} newNumber={newNumber} 
                   setPersons={setPersons} setNewName={setNewName} setNewNumber={setNewNumber} 
                   handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}
-                  setErrorMessage={setErrorMessage}/>
+                  setErrorMessage={setErrorMessage} setErrorColor={setErrorColor}/>
       <h2>Numbers</h2> 
       <Persons persons={persons} setPersons={setPersons} showAll={showAll} newFilter={newFilter}/>
     </div>
