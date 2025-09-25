@@ -14,11 +14,23 @@ const PersonForm = (props) => {
         const personToUpdate = props.persons.find(person => person.name === props.newName)               
         personService.update(personToUpdate.id, personObject).then(() => {
           props.setPersons(props.persons.filter(person => person.name === props.newName ? person.number = props.newNumber : person))
+          props.setErrorMessage(
+            `${props.newName} updated!`
+          )
+          setTimeout(() => {
+            props.setErrorMessage(null)
+          }, 5000)
         })
       }
     } else {
       personService.create(personObject).then(returnedPerson => {
         props.setPersons(props.persons.concat(returnedPerson))
+        props.setErrorMessage(
+            `${props.newName} created!`
+          )
+          setTimeout(() => {
+            props.setErrorMessage(null)
+          }, 5000)
       })
     }
     props.setNewName('')
