@@ -6,6 +6,7 @@ const App = () => {
   const [allCountries, setAllCountries] = useState([])
   const [country, setCountry] = useState([])
   const [search, setSearch] = useState('')
+  const [showButton, setShowButton] = useState('')
 
     useEffect(() => {
       axios
@@ -18,17 +19,20 @@ const App = () => {
   const handleSearchChange = (event) => {
     if(event.target.value === '') {
       setCountry([])
+      setShowButton('')
       return setSearch('')
     }
     const newSearch = event.target.value
     setSearch(newSearch)
-    setCountry(allCountries.filter(country => country.name.common.match(`^${newSearch}`)))
+    const countryRegex = new RegExp(newSearch, "i")
+    setCountry(allCountries.filter(country => country.name.common.toLowerCase().match(countryRegex)))
+    setShowButton('')
   }
 
   return (
     <div>
       <p>Find counties <input value={search} onChange={handleSearchChange}/></p>
-      <ShowCountries country={country}/>
+      <ShowCountries country={country} showButton={showButton} setShowButton={setShowButton}/>
     </div>
   )
 }
