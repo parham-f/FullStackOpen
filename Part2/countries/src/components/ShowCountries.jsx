@@ -15,10 +15,10 @@ const ShowCountries = props => {
             <p>Too many matches, specify another filter</p>
         )
     if(matchedCountries.length === 1) {
-        return <CountryDetail country={props.country} matchedCountries={matchedCountries} showButton={props.showButton}/>
+        return <CountryDetail country={props.country} matchedCountries={matchedCountries} showButton={props.showButton} weather={props.weather} setWeather={props.setWeather}/>
     }
     if(props.showButton !== '') {        
-        return <CountryDetail country={props.country} matchedCountries={matchedCountries} showButton={props.showButton}/>
+        return <CountryDetail country={props.country} matchedCountries={matchedCountries} showButton={props.showButton} weather={props.weather} setWeather={props.setWeather}/>
     }
     return (
         matchedCountries

@@ -7,6 +7,7 @@ const App = () => {
   const [country, setCountry] = useState([])
   const [search, setSearch] = useState('')
   const [showButton, setShowButton] = useState('')
+  const [weather, setWeather] = useState(null)
 
     useEffect(() => {
       axios
@@ -32,7 +33,7 @@ const App = () => {
   return (
     <div>
       <p>Find counties <input value={search} onChange={handleSearchChange}/></p>
-      <ShowCountries country={country} showButton={showButton} setShowButton={setShowButton}/>
+      <ShowCountries country={country} showButton={showButton} setShowButton={setShowButton} weather={weather} setWeather={setWeather}/>
     </div>
   )
 }

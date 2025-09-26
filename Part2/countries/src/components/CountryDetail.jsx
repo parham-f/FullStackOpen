@@ -1,3 +1,5 @@
+import GetWeather from "./GetWeather"
+
 const CountryDetail = props => {
     let matchedCountry = props.country.filter(country => country.name.common === props.matchedCountries[0].key)[0]
     if(props.showButton !== '') {
@@ -14,6 +16,8 @@ const CountryDetail = props => {
                 {languages.map(lan => <li key={lan}>{lan}</li>)}
             </ul>
             <img src={matchedCountry.flags.svg} alt="Flag" width="200" height="200"></img>
+            <h2>Weather in {matchedCountry.capital}</h2>
+            <GetWeather country={matchedCountry.name.common} weather={props.weather} setWeather={props.setWeather}/>
         </div>
     )
 }
