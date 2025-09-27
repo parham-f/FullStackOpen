@@ -25,6 +25,12 @@ let persons = [
     }
 ]
 
+const generateId = () => {
+    const min = 0
+    const max = 99999999
+    return String(Math.floor(Math.random() * (max - min + 1)) + min)
+}
+
 app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
@@ -51,6 +57,26 @@ app.delete('/api/persons/:id', (request, response) => {
   const id = request.params.id
   persons = persons.filter(person => person.id !== id)
   response.status(204).end()
+})
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({ 
+      error: 'content missing' 
+    })
+  }
+
+  const person = {
+    id: generateId(),
+    name: body.name,
+    number: body.number
+  }
+
+  persons = persons.concat(person)
+
+  response.json(person)
 })
 
 const PORT = 3001
