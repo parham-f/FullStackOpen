@@ -24,9 +24,7 @@ const PersonForm = (props) => {
         })
         .catch(error => {
           props.setErrorColor('red')
-          props.setErrorMessage(
-            `Information of ${props.newName} has already been removed from server!`
-          )
+          props.setErrorMessage(error.response.data.error)
           setTimeout(() => {
             props.setErrorMessage(null)
           }, 5000)
@@ -43,6 +41,13 @@ const PersonForm = (props) => {
           setTimeout(() => {
             props.setErrorMessage(null)
           }, 5000)
+      })
+      .catch(error => {
+        props.setErrorColor('red')
+        props.setErrorMessage(error.response.data.error)
+        setTimeout(() => {
+          props.setErrorMessage(null)
+        }, 5000)
       })
     }
     props.setNewName('')
