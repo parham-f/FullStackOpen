@@ -14,18 +14,18 @@ app.get('/api/persons', (request, response, next) => {
   Person.find({}).then(person => {
     response.json(person)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.get('/info', (request, response, next) => {
   Person.countDocuments({})
-   .then(count => {
-    response.send(
-    `<p>Phonebook has info for ${count} people</p>
+    .then(count => {
+      response.send(
+        `<p>Phonebook has info for ${count} people</p>
     <p>${Date()}</p>`
-    )
-  })
-  .catch(error => next(error))
+      )
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -33,19 +33,19 @@ app.get('/api/persons/:id', (request, response, next) => {
     if(person) {
       response.json(person)
     } else {
-        response.statusMessage = "Selected person does not exist!"
-        response.status(404).end()
+      response.statusMessage = 'Selected person does not exist!'
+      response.status(404).end()
     }
-    
-  }) 
-  .catch(error => next(error))
+
+  })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
     .then(result => {
       if(!result) {
-        response.statusMessage = "Selected person does not exist!"
+        response.statusMessage = 'Selected person does not exist!'
         response.status(404).end()
       }
       response.status(204).end()
@@ -55,7 +55,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
-  
+
   const person = new Person({
     name: body.name,
     number: body.number
@@ -64,14 +64,14 @@ app.post('/api/persons', (request, response, next) => {
   person.save().then(savedPerson => {
     response.json(savedPerson)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
   if(!name || !number) {
-    return response.status(400).json({ 
-      error: 'name/number missing' 
+    return response.status(400).json({
+      error: 'name/number missing'
     })
   }
 
@@ -111,5 +111,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
