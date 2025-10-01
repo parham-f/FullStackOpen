@@ -71,6 +71,31 @@ test('blog with no like -> likes=0', async () => {
     assert.strictEqual(blogsAtEnd[helper.initialBlogs.length].likes, 0)
 })
 
+test('blog with no title/url gets 400', async () => {
+    const noTitleBlog = {
+    author: "No Likes Writer",
+    url: "https://nolikes.com/",
+    likes: 33
+  }
+  const noURLBlog = {
+    title: "No Likes",
+    author: "No Likes Writer",
+    likes: 33
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(noTitleBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+
+  await api
+    .post('/api/blogs')
+    .send(noURLBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
