@@ -33,7 +33,7 @@ test('blogs are returned with id field (not _id)', async () => {
   })
 })
 
-test('a valid blog can be added ', async () => {
+test('a valid blog can be added', async () => {
   const newBlog = {
     title: "New Blog",
     author: "New Blog Writer",
@@ -50,9 +50,25 @@ test('a valid blog can be added ', async () => {
   const blogsAtEnd = await helper.blogsInDb()
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
 
-  const contents = blogsAtEnd.map((blog) => blog.content)
   const {id, ...savedBlogWithoutID} = blogsAtEnd[helper.initialBlogs.length]
   assert.deepStrictEqual(savedBlogWithoutID, newBlog)
+})
+
+test('blog with no like -> likes=0', async () => {
+    const newBlog = {
+    title: "No Likes",
+    author: "No Likes Writer",
+    url: "https://nolikes.com/"
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd[helper.initialBlogs.length].likes, 0)
 })
 
 after(async () => {
