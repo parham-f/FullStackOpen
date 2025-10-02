@@ -4,6 +4,7 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
+    minLength: 3,
     unique: true
   },
   name: {
@@ -13,7 +14,7 @@ const userSchema = new mongoose.Schema({
   passwordHash: {
     type: String,
     required: true
-  },
+  }
 })
 
 userSchema.set('toJSON', {
