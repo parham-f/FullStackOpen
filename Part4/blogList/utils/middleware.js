@@ -1,6 +1,13 @@
 const logger = require('./logger')
 
 const requestLogger = (request, response, next) => {
+
+  if(request.body) {
+    if("password" in request.body) {
+      request.body.password = ''
+    }
+  }
+
   logger.info('Method:', request.method)
   logger.info('Path:  ', request.path)
   logger.info('Body:  ', request.body)
