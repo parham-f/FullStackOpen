@@ -5,6 +5,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
+const { log } = require('node:console')
 
 const api = supertest(app)
 
@@ -102,7 +103,7 @@ describe('Validating parameters', () => {
     })
 })
 
-describe('deletion of a blog', () => {
+describe('Deletion of a blog', () => {
     test('succeeds with status code 204 if id is valid', async () => {
       const blogsAtStart = await helper.blogsInDb()
       const blogToDelete = blogsAtStart[0]
@@ -115,6 +116,26 @@ describe('deletion of a blog', () => {
       assert(!contents.includes(blogToDelete.url))
 
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+    })
+})
+
+describe('Updating a blog', () => {
+    test('succeeds with status code 200', async () => {
+        const updatedBlog = {
+            title: "Updated React patterns",
+            author: "Updated Michael Chan",
+            url: "https://reactpatterns.com/",
+            likes: 777
+        }
+
+        const blogsAtStart = await helper.blogsInDb()
+        const selectedBlog = blogsAtStart.filter(blog => blog.url === updatedBlog.url)
+
+        await api
+            .put(`/api/blogs/${selectedBlog[0].id}`)
+            .send(updatedBlog)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
     })
 })
 
