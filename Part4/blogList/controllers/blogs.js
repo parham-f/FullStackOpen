@@ -22,7 +22,6 @@ blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
   
   const user = request.user
-
   if (!user) {
     return response.status(401).json({ error: 'token invalid' })
   }
@@ -60,16 +59,22 @@ blogsRouter.put('/:id', async (request, response) => {
 
   const blog = await Blog.findById(request.params.id)
   if (!blog) {
-    response.status(404).end()
+    return response.status(404).json({error: "Blog doesn't exist"})
   }
+
+  const user = request.user
 
   blog.title = title
   blog.author = author
   blog.url = url
   blog.likes = likes
 
-  const updatedBlog = await blog.save()
-  response.json(updatedBlog)
+  if (user && blog.user.toString() === user.id.toString()) {
+    const updatedBlog = await blog.save()
+    response.json(updatedBlog)
+  } else {
+      return response.status(401).json({ error: 'token invalid' })
+  }
 })
 
 module.exports = blogsRouter
