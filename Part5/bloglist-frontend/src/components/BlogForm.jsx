@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import blogService from '../services/blogs'
 
-const BlogForm = ({setBlogs, blogs, notifyWith, blogFormRef}) => {
+const BlogForm = ({setBlogs, blogs, notifyWith, blogFormRef, user}) => {
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [url, setURL] = useState('')
@@ -16,7 +16,7 @@ const BlogForm = ({setBlogs, blogs, notifyWith, blogFormRef}) => {
         title: title,
         author: author,
         url: url
-        }, setBlogs, blogs, notifyWith)
+        }, setBlogs, blogs, notifyWith, user)
 
         setTitle('')
         setAuthor('')

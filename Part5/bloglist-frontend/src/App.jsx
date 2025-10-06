@@ -61,13 +61,13 @@ const App = () => {
             }}>Logout</button>
           </p>
           <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
-            <BlogForm blogs={blogs} setBlogs={setBlogs} notifyWith={notifyWith} blogFormRef={blogFormRef}/>
+            <BlogForm blogs={blogs} setBlogs={setBlogs} notifyWith={notifyWith} blogFormRef={blogFormRef} user={user}/>
           </Togglable>
         </div>
       )}
       <br></br>
       {sortedBlogs.map(blog => 
-        <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs}/>)
+        <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} notifyWith={notifyWith} user={user}/>)
       }
     </div>
   )

@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({blog, blogs, setBlogs}) => {
+const Blog = ({blog, blogs, setBlogs, notifyWith, user}) => {
   const [detailed, setDetailed] = useState(false)
 
   const blogStyle = {
@@ -23,9 +23,23 @@ const Blog = ({blog, blogs, setBlogs}) => {
       url: blog.url,
       likes: blog.likes + 1
     }
-    blogService.updateBlog(updatedBlog, blog.id, blogs, setBlogs)
+    blogService.updateBlog(updatedBlog, blog.id, blogs, setBlogs, notifyWith)
   }
 
+  const handleDelete = () => {
+    if(window.confirm(`Delete blog '${blog.title} - ${blog.author}' ?`)) {
+      blogService.deleteBlog(blog, blog.id, blogs, setBlogs, notifyWith)
+    }
+  }
+
+  let sameUsername = false
+  let loggedin = false
+  if(user) {
+    sameUsername = user.username === blog.user.username ? true : false
+    loggedin = true
+  }
+
+  
   return (
   <div style={blogStyle}>
     {!detailed && (
@@ -39,9 +53,21 @@ const Blog = ({blog, blogs, setBlogs}) => {
       {blog.title} - {blog.author}
       <button onClick={toggleDetail}>Hide</button><br></br>
       {blog.url}<br></br>
-      Likes: {blog.likes}
-      <button onClick={handleLike}>Like</button><br></br>
-      {blog.user.name}
+
+      {loggedin && (
+        <>
+          Likes: {blog.likes}
+          <button onClick={handleLike}>Like</button><br></br>
+        </>
+      )}
+      {!loggedin && (
+        <>Likes: {blog.likes}<br></br> </>
+      )}
+
+      {blog.user.name}<br></br>
+      {sameUsername && (
+        <button onClick={handleDelete}>Delete</button>
+      )}
     </div>
     )}
   </div>  
