@@ -42,7 +42,9 @@ const App = () => {
       <LoginForm notifyWith={notifyWith} setUser={setUser}/>
     </Togglable>
   )
-  
+
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+
   return (
     <div>
       <h2>Blogs</h2>
@@ -64,9 +66,9 @@ const App = () => {
         </div>
       )}
       <br></br>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs}/>
-      )}
+      {sortedBlogs.map(blog => 
+        <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs}/>)
+      }
     </div>
   )
 }
