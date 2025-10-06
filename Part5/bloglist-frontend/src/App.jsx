@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
@@ -66,7 +66,7 @@ const App = () => {
         </div>
       )}
       <br></br>
-      {sortedBlogs.map(blog => 
+      {sortedBlogs.map(blog =>
         <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} notifyWith={notifyWith} user={user}/>)
       }
     </div>

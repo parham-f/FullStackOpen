@@ -34,7 +34,7 @@ const updateBlog = async (data, id, blogs, setBlogs, notifyWith) => {
   const targetURL = `${baseUrl}/${id}`
 
   const response = await axios.put(targetURL, data, config)
-  setBlogs(blogs.map(b => (b.id === id ? {...b, likes: data.likes} : b)))
+  setBlogs(blogs.map(b => (b.id === id ? { ...b, likes: data.likes } : b)))
   notifyWith(`'${data.title} - ${data.author}' blog updated.`)
   return response.data
 }
@@ -52,4 +52,4 @@ const deleteBlog = async (data, id, blogs, setBlogs, notifyWith) => {
   return response.data
 }
 
-export default {getAll, newBlog, setToken, updateBlog, deleteBlog}
+export default { getAll, newBlog, setToken, updateBlog, deleteBlog }

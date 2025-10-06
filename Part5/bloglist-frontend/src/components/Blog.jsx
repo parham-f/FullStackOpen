@@ -1,7 +1,7 @@
-import {useState} from 'react'
+import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({blog, blogs, setBlogs, notifyWith, user}) => {
+const Blog = ({ blog, blogs, setBlogs, notifyWith, user }) => {
   const [detailed, setDetailed] = useState(false)
 
   const blogStyle = {
@@ -12,7 +12,7 @@ const Blog = ({blog, blogs, setBlogs, notifyWith, user}) => {
     marginBottom: 5
   }
 
-  const toggleDetail = (event) => {
+  const toggleDetail = () => {
     setDetailed(!detailed)
   }
 
@@ -39,38 +39,38 @@ const Blog = ({blog, blogs, setBlogs, notifyWith, user}) => {
     loggedin = true
   }
 
-  
+
   return (
-  <div style={blogStyle}>
-    {!detailed && (
-    <div>
-      {blog.title} - {blog.author}
-      <button onClick={toggleDetail}>View</button>
-    </div>
-    )}
-    {detailed && (
-    <div>
-      {blog.title} - {blog.author}
-      <button onClick={toggleDetail}>Hide</button><br></br>
-      {blog.url}<br></br>
+    <div style={blogStyle}>
+      {!detailed && (
+        <div>
+          {blog.title} - {blog.author}
+          <button onClick={toggleDetail}>View</button>
+        </div>
+      )}
+      {detailed && (
+        <div>
+          {blog.title} - {blog.author}
+          <button onClick={toggleDetail}>Hide</button><br></br>
+          {blog.url}<br></br>
 
-      {loggedin && (
-        <>
+          {loggedin && (
+            <>
           Likes: {blog.likes}
-          <button onClick={handleLike}>Like</button><br></br>
-        </>
-      )}
-      {!loggedin && (
-        <>Likes: {blog.likes}<br></br> </>
-      )}
+              <button onClick={handleLike}>Like</button><br></br>
+            </>
+          )}
+          {!loggedin && (
+            <>Likes: {blog.likes}<br></br> </>
+          )}
 
-      {blog.user.name}<br></br>
-      {sameUsername && (
-        <button onClick={handleDelete}>Delete</button>
+          {blog.user.name}<br></br>
+          {sameUsername && (
+            <button onClick={handleDelete}>Delete</button>
+          )}
+        </div>
       )}
     </div>
-    )}
-  </div>  
   )
 }
 
