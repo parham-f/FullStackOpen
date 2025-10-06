@@ -12,13 +12,14 @@ const getAll = async () => {
   return request.data
 }
 
-const newBlog = async (data, setBlogs, blogs) => {
+const newBlog = async (data, setBlogs, blogs, notifyWith) => {
   const config = {
     headers: { Authorization: token }
   }
 
   const response = await axios.post(baseUrl, data, config)
   setBlogs(blogs.concat(response.data))
+  notifyWith(`A new blog '${data.title}' by '${data.author}' added.`)
   return response.data
 }
 

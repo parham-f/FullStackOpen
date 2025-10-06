@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notification, setNotification] = useState({ message: null })
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -29,6 +30,13 @@ const App = () => {
     }
   }, [])
 
+  const notifyWith = (message, isError = false) => {
+    setNotification({ message, isError })
+    setTimeout(() => {
+      setNotification({ message: null })
+    }, 5000)
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     
@@ -40,12 +48,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
-      setErrorMessage('Wrong Credentials')
+      notifyWith(`Wrong Username or Password`, true)
       setUsername('')
       setPassword('')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
     }
   }
 
@@ -56,8 +61,8 @@ const App = () => {
       title: title,
       author: author,
       url: url
-    }, setBlogs, blogs)
-    
+    }, setBlogs, blogs, notifyWith)
+
     setTitle('')
     setAuthor('')
     setURL('')
@@ -71,6 +76,7 @@ const App = () => {
     return (
       <div>
       <h2>Login to application</h2>
+      <Notification notification={notification} />
       <form onSubmit={handleLogin}>
         <div>
           <label>
@@ -101,6 +107,7 @@ const App = () => {
   return (
     <div>
       <h2>Blogs</h2>
+      <Notification notification={notification} />
       <p>
         {user.name} logged in
         <button onClick={() => {
