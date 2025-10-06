@@ -23,4 +23,16 @@ const newBlog = async (data, setBlogs, blogs, notifyWith) => {
   return response.data
 }
 
-export default {getAll, newBlog, setToken}
+const updateBlog = async (data, id, blogs, setBlogs) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+
+  const targetURL = `${baseUrl}/${id}`
+
+  const response = await axios.put(targetURL, data, config)
+  setBlogs(blogs.map(b => (b.id === id ? {...b, likes: data.likes} : b)))
+  return response.data
+}
+
+export default {getAll, newBlog, setToken, updateBlog}

@@ -1,6 +1,7 @@
 import {useState} from 'react'
+import blogService from '../services/blogs'
 
-const Blog = ({blog}) => {
+const Blog = ({blog, blogs, setBlogs}) => {
   const [detailed, setDetailed] = useState(false)
 
   const blogStyle = {
@@ -10,14 +11,19 @@ const Blog = ({blog}) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  console.log(blog)
 
   const toggleDetail = (event) => {
     setDetailed(!detailed)
   }
 
   const handleLike = () => {
-
+    const updatedBlog = {
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes + 1
+    }
+    blogService.updateBlog(updatedBlog, blog.id, blogs, setBlogs)
   }
 
   return (
