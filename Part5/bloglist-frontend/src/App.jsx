@@ -37,12 +37,6 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  const loginForm = () => (
-    <Togglable buttonLabel="Login">
-      <LoginForm notifyWith={notifyWith} setUser={setUser}/>
-    </Togglable>
-  )
-
   const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
 
   return (
@@ -50,7 +44,7 @@ const App = () => {
       <h2>Blogs</h2>
       <Notification notification={notification} />
 
-      {!user && loginForm()}
+      {!user && (<LoginForm notifyWith={notifyWith} setUser={setUser}/>)}
       {user && (
         <div>
           <p>

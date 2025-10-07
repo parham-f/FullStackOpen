@@ -56,7 +56,7 @@ const Blog = ({ blog, blogs, setBlogs, notifyWith, user }) => {
 
           {loggedin && (
             <>
-          Likes: {blog.likes}
+              Likes: {blog.likes}
               <button onClick={handleLike}>Like</button><br></br>
             </>
           )}
