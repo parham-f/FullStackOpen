@@ -28,9 +28,9 @@ const BlogForm = ({ setBlogs, blogs, notifyWith, blogFormRef, user }) => {
     <div>
       <h2>Create New Blog</h2>
       <form onSubmit={addBlog}>
-        <div>Title: <input value={title} onChange={handleTitleChange} /></div>
-        <div>Author: <input value={author} onChange={handleAuthorChange} /></div>
-        <div>URL: <input value={url} onChange={handleURLChange} /></div>
+        <div>Title: <input value={title} onChange={handleTitleChange} id="titleInput"/></div>
+        <div>Author: <input value={author} onChange={handleAuthorChange} id="authorInput"/></div>
+        <div>URL: <input value={url} onChange={handleURLChange} id="urlInput"/></div>
         <div><button type="submit">Create</button></div>
       </form>
     </div>

@@ -14,4 +14,12 @@ const resetDB = async (request) => {
         }
     })
 }
-export {loginWith, resetDB}
+
+const createBlog = async (page, title, author, url) => {
+  await page.getByRole('button', {name: 'Create new blog'}).click()
+  await page.locator('id=titleInput').fill(title)
+  await page.locator('id=authorInput').fill(author)
+  await page.locator('id=urlInput').fill(url)
+  await page.getByRole('button', {name: 'Create'}).click()
+}
+export {loginWith, resetDB, createBlog}
