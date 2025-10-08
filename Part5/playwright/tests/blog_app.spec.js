@@ -62,5 +62,20 @@ describe('Blog app', () => {
 
       await expect(page.getByText('No Blog')).toBeVisible()
     })
+
+    test('a blog can not delete with another user', async ({request, page}) => {
+      await createBlog(page, 'test title', 'test author', 'https://testurl.com')
+      await request.post('/api/users', {
+        data: {
+            name: 'new user',
+            username: 'newUser',
+            password: 'password'
+            }
+      })
+      await page.getByRole('button', {name: 'Logout'}).click()
+      await loginWith(page, 'newUser', 'password')
+      await page.getByRole('button', {name: 'View'}).click()
+      await expect(page.getByRole('button', {name: 'Delete'})).not.toBeVisible()
+    })
   })
 })
