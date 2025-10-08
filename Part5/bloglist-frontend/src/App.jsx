@@ -39,6 +39,8 @@ const App = () => {
 
   const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
 
+  const noBlog = blogs.length === 0 ? true : false
+  
   return (
     <div>
       <h2>Blogs</h2>
@@ -60,6 +62,9 @@ const App = () => {
         </div>
       )}
       <br></br>
+      {noBlog && (
+        <div>No Blog</div>
+      )}
       {sortedBlogs.map(blog =>
         <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} notifyWith={notifyWith} user={user}/>)
       }

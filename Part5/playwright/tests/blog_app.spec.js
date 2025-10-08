@@ -48,7 +48,19 @@ describe('Blog app', () => {
       await createBlog(page, 'test title', 'test author', 'https://testurl.com')
       await page.getByRole('button', {name: 'View'}).click()
       await page.getByRole('button', {name: 'Like'}).click()
+      await page.getByText('Likes: 0').waitFor()
       await expect(page.getByText('Likes: 1')).toBeVisible()
+    })
+
+    test('a new blog can be deleted', async ({page}) => {
+      await createBlog(page, 'test title', 'test author', 'https://testurl.com')
+      await page.getByRole('button', {name: 'View'}).click()
+      
+
+      page.on('dialog', dialog => dialog.accept())
+      await page.getByRole('button', {name: 'Delete'}).click()
+
+      await expect(page.getByText('No Blog')).toBeVisible()
     })
   })
 })
