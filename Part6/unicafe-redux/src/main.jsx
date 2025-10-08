@@ -7,11 +7,10 @@ import reducer from './reducer'
 const store = createStore(reducer)
 
 const App = () => {
-  const handleFunc = (act) => {
-    return store.dispatch({
+  const handleFunc = (act) => 
+    store.dispatch({
       type: act
     })
-  }
 
   return (
     <div>
