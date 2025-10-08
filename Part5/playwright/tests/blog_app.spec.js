@@ -1,8 +1,10 @@
 const {test, describe, expect, beforeEach} = require('@playwright/test')
 const {loginWith, resetDB, createBlog} = require('./helper')
+const { log } = require('console')
 
 describe('Blog app', () => {
-  beforeEach(async ({page}) => {
+  beforeEach(async ({page, request}) => {
+    await resetDB(request)
     await page.goto('/')
   })
 
@@ -17,9 +19,6 @@ describe('Blog app', () => {
   })
 
   describe('Login', () => {
-    beforeEach(async ({request}) => {
-      await resetDB(request)
-    })
 
     test('succeeds with correct credentials', async ({page}) => {
       await loginWith(page, 'root', 'sekret')
@@ -34,8 +33,7 @@ describe('Blog app', () => {
   })
 
   describe('When logged in', () => {
-    beforeEach(async ({page, request}) => {
-      await resetDB(request)
+    beforeEach(async ({page}) => {
       await loginWith(page, 'root', 'sekret')
     })
 
@@ -76,6 +74,44 @@ describe('Blog app', () => {
       await loginWith(page, 'newUser', 'password')
       await page.getByRole('button', {name: 'View'}).click()
       await expect(page.getByRole('button', {name: 'Delete'})).not.toBeVisible()
+    })
+
+    test('blogs are sorted based on likes', async ({page}) => {
+      const clickLike = async (ln) => {
+        await Promise.all([
+        page.waitForResponse(
+          (r) => r.url().includes('/api/blogs') && r.request().method() === 'PUT' && r.status() === 200
+        ),
+        await page.getByRole('button', {name: 'Like'}).click(),
+        {if(ln) {page.getByText(`Likes: ${ln}`).waitFor()}}
+        ])
+      }
+
+      await createBlog(page, 'test1 title', 'test1 author', 'https://testurl1.com')
+      await createBlog(page, 'test2 title', 'test2 author', 'https://testurl2.com')
+      await createBlog(page, 'test3 title', 'test3 author', 'https://testurl3.com')
+
+      const v1 = await page.getByRole('button', {name: 'View'}).all()
+      await v1[0].click()
+      await clickLike(1)
+      const v2 = await page.getByRole('button', {name: 'View'}).all()
+      await v2[0].click()
+      const h1 = await page.getByRole('button', {name: 'Hide'}).all()
+      await h1[0].click()
+      await clickLike()
+      await clickLike(2)
+      const v3 = await page.getByRole('button', {name: 'View'}).all()
+      await v3[1].click()
+      const h2 = await page.getByRole('button', {name: 'Hide'}).all()
+      await h2[0].click()
+      await clickLike()
+      await clickLike()
+      await clickLike(3)
+      await page.getByRole('button', {name: 'Hide'}).click()
+      
+      const divs = page.locator('div[style="padding-top: 10px; padding-left: 2px; border: 1px solid; margin-bottom: 5px;"]')
+      const expectedOrder = ['test3 title - test3 authorView', 'test2 title - test2 authorView', 'test1 title - test1 authorView']
+      await expect(divs).toHaveText(expectedOrder)
     })
   })
 })
