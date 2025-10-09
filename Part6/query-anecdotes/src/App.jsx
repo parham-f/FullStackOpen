@@ -12,7 +12,8 @@ const App = () => {
   const result = useQuery({
     queryKey: ['anecdotes'],
     queryFn: () => axios.get('http://localhost:3001/anecdotes').then(res => res.data),
-    retry: false
+    retry: false,
+    refetchOnWindowFocus: false
   })
   console.log(JSON.parse(JSON.stringify(result)))
 
