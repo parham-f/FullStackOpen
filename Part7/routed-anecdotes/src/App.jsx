@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import {Routes, Route, Link, useMatch} from 'react-router-dom'
+import {Routes, Route, Link, useMatch, useNavigate} from 'react-router-dom'
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
@@ -63,6 +63,9 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    setContent('')
+    setAuthor('')
+    setInfo('')
   }
 
   return (
@@ -106,11 +109,24 @@ const App = () => {
     }
   ])
 
+  const navigate = useNavigate()
+
   const [notification, setNotification] = useState('')
+
+  const Notification = () => {
+    setTimeout(() => {
+      setNotification('')
+    }, 5000)
+    return (
+      <p>{notification}</p>
+    )
+  }
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`A new anecdote '${anecdote.content}' created!`)
+    navigate(`/`)
   }
 
   const anecdoteById = (id) =>
@@ -144,6 +160,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      <Notification/>
       <Routes>
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />}/>
         <Route path='/anecdotes/:id' element={<Anecdote anecdote={anecdote} />}/>
