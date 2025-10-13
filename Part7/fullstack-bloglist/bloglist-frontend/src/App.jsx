@@ -15,7 +15,6 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const initBlogs = useSelector((state) => state.blogs)
 
-  // const [user, setUser] = useState(null)
   const user = useSelector((state) => state.user)
 
   useEffect(() => {
@@ -26,22 +25,12 @@ const App = () => {
     setBlogs(initBlogs)
   }, [initBlogs])
 
-  // useEffect(() => {
-  //   const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser")
-  //   if (loggedUserJSON) {
-  //     const user = JSON.parse(loggedUserJSON)
-  //     setUser(user)
-  //     blogService.setToken(user.token)
-  //   }
-  // }, [])
-
   useEffect(() => {
-    dispatch(initUser()) // rehydrate user & set token
-    dispatch(initializeBlogs()) // fetch blogs
+    dispatch(initUser())
+    dispatch(initializeBlogs())
   }, [dispatch])
 
   const handleLogin = async (username, password) => {
-    // if you need the error, you can unwrap: await dispatch(login({ username, password })).unwrap()
     dispatch(login({ username, password }))
   }
 

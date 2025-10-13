@@ -1,33 +1,8 @@
-// import { createSlice } from '@reduxjs/toolkit'
-// import loginService from '../services/login'
-
-// const userSlice = createSlice({
-//   name: 'user',
-//   initialState: {},
-//   reducers: {
-//     setUser(state, action) {
-//       return action.payload
-//     }
-//   }
-// })
-
-// export const {setUser} = userSlice.actions
-
-// export const loginUser = (username, password) => {
-//   return async dispatch => {
-//     const user = await loginService.login({ username, password })
-//     dispatch(setUser(user))
-//   }
-// }
-
-// export default userSlice.reducer
-
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 import { showNotification } from './notificationReducer'
 
-// Log in and persist + notify
 export const login = createAsyncThunk(
   'user/login',
   async (credentials, { dispatch, rejectWithValue }) => {
@@ -50,7 +25,6 @@ export const initUser = createAsyncThunk('user/init', async (_, { dispatch }) =>
   if (!json) return null
   const user = JSON.parse(json)
   blogService.setToken(user.token)
-  // (Usually no notification here to avoid noise on refresh)
   return user
 })
 
