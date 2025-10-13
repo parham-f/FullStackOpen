@@ -1,0 +1,80 @@
+import { useState, useEffect, useRef } from "react"
+import Blog from "./components/Blog"
+import blogService from "./services/blogs"
+import Notification from "./components/Notification"
+import LoginForm from "./components/LoginForm"
+import Togglable from "./components/Togglable"
+import BlogForm from "./components/BlogForm"
+
+const App = () => {
+  const [blogs, setBlogs] = useState([])
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    const fetchingBlogs = async () => {
+      const fetchedBlogs = await blogService.getAll()
+      setBlogs(fetchedBlogs)
+    }
+    fetchingBlogs()
+  }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser")
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
+  const blogFormRef = useRef()
+
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+
+  const noBlog = blogs.length === 0 ? true : false
+
+  return (
+    <div>
+      <h2>Blogs</h2>
+      <Notification />
+
+      {!user && <LoginForm setUser={setUser} />}
+      {user && (
+        <div>
+          <p>
+            {user.name} logged in
+            <button
+              onClick={() => {
+                window.localStorage.removeItem("loggedBlogAppUser")
+                window.location.reload()
+              }}
+            >
+              Logout
+            </button>
+          </p>
+          <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
+            <BlogForm
+              blogs={blogs}
+              setBlogs={setBlogs}
+              blogFormRef={blogFormRef}
+              user={user}
+            />
+          </Togglable>
+        </div>
+      )}
+      <br></br>
+      {noBlog && <div>No Blog</div>}
+      {sortedBlogs.map((blog) => (
+        <Blog
+          key={blog.id}
+          blog={blog}
+          blogs={blogs}
+          setBlogs={setBlogs}
+          user={user}
+        />
+      ))}
+    </div>
+  )
+}
+
+export default App
