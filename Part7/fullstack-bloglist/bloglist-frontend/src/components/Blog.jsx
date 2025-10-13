@@ -1,12 +1,13 @@
 import { useState } from "react"
-import { useDispatch } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { showNotification } from "../reducers/notificationReducer"
 import blogService from "../services/blogs"
 
-const Blog = ({ blog, blogs, setBlogs, user }) => {
+const Blog = ({ blog, setBlogs, user }) => {
   const [detailed, setDetailed] = useState(false)
 
   const dispatch = useDispatch()
+  const blogs = useSelector((state) => state.blogs)
 
   const blogStyle = {
     paddingTop: 10,

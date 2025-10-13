@@ -5,18 +5,24 @@ import Notification from "./components/Notification"
 import LoginForm from "./components/LoginForm"
 import Togglable from "./components/Togglable"
 import BlogForm from "./components/BlogForm"
+import { useSelector, useDispatch } from "react-redux"
+import { initializeBlogs } from "./reducers/blogReducer"
 
 const App = () => {
+  const dispatch = useDispatch()
+
   const [blogs, setBlogs] = useState([])
+  const initBlogs = useSelector((state) => state.blogs)
+
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    const fetchingBlogs = async () => {
-      const fetchedBlogs = await blogService.getAll()
-      setBlogs(fetchedBlogs)
-    }
-    fetchingBlogs()
+    dispatch(initializeBlogs())
   }, [])
+
+  useEffect(() => {
+    setBlogs(initBlogs)
+  }, [initBlogs])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser")
@@ -29,7 +35,7 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   const noBlog = blogs.length === 0 ? true : false
 
