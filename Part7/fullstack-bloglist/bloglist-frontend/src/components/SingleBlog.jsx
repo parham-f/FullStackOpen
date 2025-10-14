@@ -11,7 +11,7 @@ const SingleBlog = ({ blog, setBlogs }) => {
   const dispatch = useDispatch()
   const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
-  const [comments, setComments] = useState([])
+  const [comment, setComment] = useState("")
 
   const handleLike = () => {
     const updatedBlog = {
@@ -41,6 +41,16 @@ const SingleBlog = ({ blog, setBlogs }) => {
         )
       )
     }
+  }
+
+  const handleInputChange = (event) => {
+    setComment(event.target.value)
+  }
+
+  const handleAddComment = async () => {
+    const updated = await blogService.addComment(comment, blog.id)
+    setBlogs((prev) => prev.map((b) => (b.id === updated.id ? updated : b)))
+    setComment("")
   }
 
   let sameUsername = false
@@ -76,6 +86,10 @@ const SingleBlog = ({ blog, setBlogs }) => {
       {sameUsername && <button onClick={handleDelete}>Delete</button>}
       <br></br>
       <strong>Comments</strong>
+      <div>
+        <input type="text" value={comment} onChange={handleInputChange} />
+        <button onClick={handleAddComment}>Add Comment</button>
+      </div>
       {blog.comments.length === 0 && <p>No Comments</p>}
       {blog.comments.length !== 0 && (
         <ul>
