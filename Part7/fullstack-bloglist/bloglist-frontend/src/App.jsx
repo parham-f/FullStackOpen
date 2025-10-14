@@ -6,6 +6,7 @@ import Togglable from "./components/Togglable"
 import BlogForm from "./components/BlogForm"
 import UserList from "./components/userList"
 import SingleUser from "./components/SingleUser"
+import SingleBlog from "./components/SingleBlog"
 import usersServices from "./services/users"
 import { useSelector, useDispatch } from "react-redux"
 import { initializeBlogs } from "./reducers/blogReducer"
@@ -14,12 +15,9 @@ import { Routes, Route, Link, useMatch, useNavigate } from "react-router-dom"
 
 const App = () => {
   const dispatch = useDispatch()
-
   const [blogs, setBlogs] = useState([])
   const initBlogs = useSelector((state) => state.blogs)
-
   const user = useSelector((state) => state.user)
-
   const [users, setUsers] = useState([])
 
   useEffect(() => {
@@ -56,9 +54,14 @@ const App = () => {
 
   const noBlog = blogs.length === 0 ? true : false
 
-  const match = useMatch("/users/:id")
-  const singleUser = match
-    ? users.find((u) => String(u.id) === match.params.id)
+  const userMatch = useMatch("/users/:id")
+  const singleUser = userMatch
+    ? users.find((u) => String(u.id) === userMatch.params.id)
+    : null
+
+  const blogMatch = useMatch("/blogs/:id")
+  const singleBlog = blogMatch
+    ? blogs.find((b) => String(b.id) === blogMatch.params.id)
     : null
 
   const Menu = () => {
@@ -126,6 +129,10 @@ const App = () => {
         <Route
           path="/users/:id"
           element={<SingleUser singleUser={singleUser} />}
+        />
+        <Route
+          path="/blogs/:id"
+          element={<SingleBlog blog={singleBlog} setBlogs={setBlogs} />}
         />
         <Route path="/" element={defaultView(user)} />
       </Routes>
