@@ -69,13 +69,24 @@ const App = () => {
       paddingRight: 5,
     }
     return (
-      <div>
+      <div style={{ backgroundColor: "lightgrey" }}>
         <Link to="/" style={padding}>
-          Home
+          Blogs
         </Link>
         <Link to="/users" style={padding}>
           Users
         </Link>
+        {!user && (
+          <Togglable buttonLabel="Login" ref={blogFormRef}>
+            <LoginForm onLogin={handleLogin} />
+          </Togglable>
+        )}
+        {user && (
+          <>
+            {user.name} logged in &nbsp;
+            <button onClick={handleLogout}>Logout</button>
+          </>
+        )}
       </div>
     )
   }
@@ -83,6 +94,7 @@ const App = () => {
   const defaultView = (user) => {
     return (
       <div>
+        <h2>Blogs</h2>
         {user && (
           <div>
             <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
@@ -112,18 +124,7 @@ const App = () => {
   return (
     <div>
       <Menu />
-      <h2>Blogs</h2>
       <Notification />
-      {!user && <LoginForm onLogin={handleLogin} />}
-      {user && (
-        <div>
-          <p>{user.name} logged in</p>
-          <p>
-            <button onClick={handleLogout}>Logout</button>
-          </p>
-        </div>
-      )}
-      <br></br>
       <Routes>
         <Route path="/users" element={<UserList users={users} />} />
         <Route
