@@ -5,6 +5,8 @@ import LoginForm from "./components/LoginForm"
 import Togglable from "./components/Togglable"
 import BlogForm from "./components/BlogForm"
 import UserList from "./components/userList"
+import SingleUser from "./components/SingleUser"
+import usersServices from "./services/users"
 import { useSelector, useDispatch } from "react-redux"
 import { initializeBlogs } from "./reducers/blogReducer"
 import { initUser, login, logout } from "./reducers/userReducer"
@@ -17,6 +19,15 @@ const App = () => {
   const initBlogs = useSelector((state) => state.blogs)
 
   const user = useSelector((state) => state.user)
+
+  const [users, setUsers] = useState([])
+
+  useEffect(() => {
+    const load = async () => {
+      setUsers(await usersServices.getAll())
+    }
+    load()
+  }, [])
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -45,6 +56,11 @@ const App = () => {
 
   const noBlog = blogs.length === 0 ? true : false
 
+  const match = useMatch("/users/:id")
+  const singleUser = match
+    ? users.find((u) => String(u.id) === match.params.id)
+    : null
+
   const Menu = () => {
     const padding = {
       paddingRight: 5,
@@ -64,13 +80,8 @@ const App = () => {
   const defaultView = (user) => {
     return (
       <div>
-        {!user && <LoginForm onLogin={handleLogin} />}
         {user && (
           <div>
-            <p>{user.name} logged in</p>
-            <p>
-              <button onClick={handleLogout}>Logout</button>
-            </p>
             <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
               <BlogForm
                 blogs={blogs}
@@ -81,7 +92,6 @@ const App = () => {
             </Togglable>
           </div>
         )}
-        <br></br>
         {noBlog && <div>No Blog</div>}
         {sortedBlogs.map((blog) => (
           <Blog
@@ -101,8 +111,22 @@ const App = () => {
       <Menu />
       <h2>Blogs</h2>
       <Notification />
+      {!user && <LoginForm onLogin={handleLogin} />}
+      {user && (
+        <div>
+          <p>{user.name} logged in</p>
+          <p>
+            <button onClick={handleLogout}>Logout</button>
+          </p>
+        </div>
+      )}
+      <br></br>
       <Routes>
-        <Route path="/users" element={<UserList />} />
+        <Route path="/users" element={<UserList users={users} />} />
+        <Route
+          path="/users/:id"
+          element={<SingleUser singleUser={singleUser} />}
+        />
         <Route path="/" element={defaultView(user)} />
       </Routes>
     </div>
