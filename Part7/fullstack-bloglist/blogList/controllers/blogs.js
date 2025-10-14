@@ -76,4 +76,21 @@ blogsRouter.put('/:id', async (request, response) => {
   }
 })
 
+blogsRouter.post('/:id/comments', async (req, res, next) => {
+  const { id } = req.params
+  let { comment } = req.body || {}
+
+  const updated = await Blog.findByIdAndUpdate(
+      id,
+      { $push: { comments: { text: comment.trim() } } },
+      { new: true, runValidators: true, context: 'query' }
+    )
+
+  if (!updated) {
+    return res.status(404).json({ error: 'blog not found' })
+  }
+
+  return res.status(201).json(updated)
+})
+
 module.exports = blogsRouter

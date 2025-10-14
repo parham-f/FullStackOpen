@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { showNotification } from "../reducers/notificationReducer"
 import blogService from "../services/blogs"
@@ -10,6 +11,7 @@ const SingleBlog = ({ blog, setBlogs }) => {
   const dispatch = useDispatch()
   const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
+  const [comments, setComments] = useState([])
 
   const handleLike = () => {
     const updatedBlog = {
@@ -72,6 +74,16 @@ const SingleBlog = ({ blog, setBlogs }) => {
       Added by {blog.user.name}
       <br></br>
       {sameUsername && <button onClick={handleDelete}>Delete</button>}
+      <br></br>
+      <strong>Comments</strong>
+      {blog.comments.length === 0 && <p>No Comments</p>}
+      {blog.comments.length !== 0 && (
+        <ul>
+          {blog.comments.map((comment) => (
+            <li key={comment.id}>{comment.text}</li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }

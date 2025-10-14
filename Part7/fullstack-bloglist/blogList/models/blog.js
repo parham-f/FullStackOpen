@@ -1,5 +1,10 @@
 const mongoose = require('mongoose')
 
+const commentSchema = new mongoose.Schema(
+  {text: { type: String, required: true}},
+  {_id: true}
+)
+
 const blogSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -20,7 +25,8 @@ const blogSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  }
+  },
+  comments: { type: [commentSchema], default: [] }
 })
 
 blogSchema.set('toJSON', {
@@ -28,7 +34,15 @@ blogSchema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
-  },
+    if (Array.isArray(returnedObject.comments)) {
+      returnedObject.comments = returnedObject.comments.map(c => ({
+        id: c._id?.toString(),
+        text: c.text,
+        user: c.user,
+        createdAt: c.createdAt,
+      }))
+    }
+  }
 })
 
 module.exports = mongoose.model('Blog', blogSchema)
