@@ -1,19 +1,23 @@
 import { Link } from "react-router-dom"
+import { List, ListItem, ListItemText } from "@mui/material"
 
-const Blog = ({ blog, setBlogs, user }) => {
+const Blog = ({ blog }) => {
   const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
     border: "solid",
     borderWidth: 1,
-    marginBottom: 5,
+    borderRadius: "5px",
+    marginTop: 5,
   }
 
   return (
     <div style={blogStyle}>
-      <Link to={`/blogs/${blog.id}`}>
-        {blog.title} - {blog.author}
-      </Link>
+      <ListItem>
+        <ListItemText>
+          <Link to={`/blogs/${blog.id}`}>
+            {blog.title} - {blog.author}
+          </Link>
+        </ListItemText>
+      </ListItem>
     </div>
   )
 }

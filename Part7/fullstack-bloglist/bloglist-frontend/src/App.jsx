@@ -11,7 +11,8 @@ import usersServices from "./services/users"
 import { useSelector, useDispatch } from "react-redux"
 import { initializeBlogs } from "./reducers/blogReducer"
 import { initUser, login, logout } from "./reducers/userReducer"
-import { Routes, Route, Link, useMatch, useNavigate } from "react-router-dom"
+import { Routes, Route, Link, useMatch } from "react-router-dom"
+import { Container, AppBar, Toolbar, Button, Box } from "@mui/material"
 
 const App = () => {
   const dispatch = useDispatch()
@@ -69,24 +70,39 @@ const App = () => {
       paddingRight: 5,
     }
     return (
-      <div style={{ backgroundColor: "lightgrey" }}>
-        <Link to="/" style={padding}>
-          Blogs
-        </Link>
-        <Link to="/users" style={padding}>
-          Users
-        </Link>
-        {!user && (
-          <Togglable buttonLabel="Login" ref={blogFormRef}>
-            <LoginForm onLogin={handleLogin} />
-          </Togglable>
-        )}
-        {user && (
-          <>
-            {user.name} logged in &nbsp;
-            <button onClick={handleLogout}>Logout</button>
-          </>
-        )}
+      <div>
+        <AppBar position="static">
+          <Toolbar variant="dense">
+            <Button color="inherit" component={Link} to="/">
+              Blogs
+            </Button>
+            <Button color="inherit" component={Link} to="/users">
+              Users
+            </Button>
+            {!user && (
+              <>
+                <Box sx={{ flexGrow: 1 }} />
+                <Togglable buttonLabel="Login" ref={blogFormRef}>
+                  <LoginForm onLogin={handleLogin} />
+                </Togglable>
+              </>
+            )}
+            {user && (
+              <>
+                <Box sx={{ flexGrow: 1 }} />
+                {user.name} logged in &nbsp;
+                <Button
+                  style={{ border: "2px solid", fontSize: "15px" }}
+                  variant="outlined"
+                  color="inherit"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Button>
+              </>
+            )}
+          </Toolbar>
+        </AppBar>
       </div>
     )
   }
@@ -109,35 +125,31 @@ const App = () => {
         )}
         {noBlog && <div>No Blog</div>}
         {sortedBlogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            blogs={blogs}
-            setBlogs={setBlogs}
-            user={user}
-          />
+          <Blog key={blog.id} blog={blog} />
         ))}
       </div>
     )
   }
 
   return (
-    <div>
-      <Menu />
-      <Notification />
-      <Routes>
-        <Route path="/users" element={<UserList users={users} />} />
-        <Route
-          path="/users/:id"
-          element={<SingleUser singleUser={singleUser} />}
-        />
-        <Route
-          path="/blogs/:id"
-          element={<SingleBlog blog={singleBlog} setBlogs={setBlogs} />}
-        />
-        <Route path="/" element={defaultView(user)} />
-      </Routes>
-    </div>
+    <Container>
+      <div>
+        <Menu />
+        <Notification />
+        <Routes>
+          <Route path="/users" element={<UserList users={users} />} />
+          <Route
+            path="/users/:id"
+            element={<SingleUser singleUser={singleUser} />}
+          />
+          <Route
+            path="/blogs/:id"
+            element={<SingleBlog blog={singleBlog} setBlogs={setBlogs} />}
+          />
+          <Route path="/" element={defaultView(user)} />
+        </Routes>
+      </div>
+    </Container>
   )
 }
 

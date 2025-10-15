@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { showNotification } from "../reducers/notificationReducer"
 import blogService from "../services/blogs"
+import { TextField, Button } from "@mui/material"
 
 const BlogForm = ({ setBlogs, blogs, blogFormRef, user }) => {
   const [title, setTitle] = useState("")
@@ -41,22 +42,42 @@ const BlogForm = ({ setBlogs, blogs, blogFormRef, user }) => {
       <h2>Create New Blog</h2>
       <form onSubmit={addBlog}>
         <div>
-          Title:{" "}
-          <input value={title} onChange={handleTitleChange} id="titleInput" />
-        </div>
-        <div>
-          Author:{" "}
-          <input
-            value={author}
-            onChange={handleAuthorChange}
-            id="authorInput"
+          <TextField
+            label="Title"
+            value={title}
+            id="titleInput"
+            onChange={handleTitleChange}
+            color="inherit"
           />
         </div>
         <div>
-          URL: <input value={url} onChange={handleURLChange} id="urlInput" />
+          <TextField
+            label="Author"
+            value={author}
+            id="authorInput"
+            onChange={handleAuthorChange}
+            color="inherit"
+            style={{ marginTop: "5px" }}
+          />
         </div>
         <div>
-          <button type="submit">Create</button>
+          <TextField
+            label="URL"
+            value={url}
+            id="urlInput"
+            onChange={handleURLChange}
+            style={{ marginTop: "5px" }}
+          />
+        </div>
+        <div>
+          <Button
+            style={{ marginTop: 5, border: "2px solid", fontSize: "15px" }}
+            variant="outlined"
+            color="primary"
+            type="submit"
+          >
+            Create
+          </Button>
         </div>
       </form>
     </div>

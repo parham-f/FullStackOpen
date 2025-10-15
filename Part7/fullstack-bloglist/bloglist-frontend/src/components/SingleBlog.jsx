@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { showNotification } from "../reducers/notificationReducer"
 import blogService from "../services/blogs"
+import { TextField, Button, List, ListItem, ListItemText } from "@mui/material"
 
 const SingleBlog = ({ blog, setBlogs }) => {
   if (!blog) {
@@ -68,10 +69,19 @@ const SingleBlog = ({ blog, setBlogs }) => {
       <br></br>
       <a href={blog.url}>{blog.url}</a>
       <br></br>
+      <br></br>
       {loggedin && (
         <>
           Likes: {blog.likes}
-          <button onClick={handleLike}>Like</button>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            onClick={handleLike}
+          >
+            Like
+          </Button>
+          <br></br>
           <br></br>
         </>
       )}
@@ -79,24 +89,62 @@ const SingleBlog = ({ blog, setBlogs }) => {
         <>
           Likes: {blog.likes}
           <br></br>
+          <br></br>
         </>
       )}
       Added by {blog.user.name}
       <br></br>
-      {sameUsername && <button onClick={handleDelete}>Delete</button>}
+      <br></br>
+      {sameUsername && (
+        <Button
+          variant="contained"
+          color="error"
+          type="submit"
+          onClick={handleDelete}
+        >
+          Delete
+        </Button>
+      )}
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
       <br></br>
       <strong>Comments</strong>
       <div>
-        <input type="text" value={comment} onChange={handleInputChange} />
-        <button onClick={handleAddComment}>Add Comment</button>
+        <TextField
+          type="text"
+          label="username"
+          value={comment}
+          onChange={handleInputChange}
+          color="primary"
+          variant="filled"
+        />
+        <Button
+          style={{ marginTop: "10px", marginLeft: "5px" }}
+          variant="contained"
+          color="primary"
+          type="submit"
+          onClick={handleAddComment}
+        >
+          Add Comment
+        </Button>
       </div>
       {blog.comments.length === 0 && <p>No Comments</p>}
       {blog.comments.length !== 0 && (
-        <ul>
+        <List
+          sx={{
+            listStyleType: "disc",
+            pl: 2,
+            "& .MuiListItem-root": { display: "list-item" },
+          }}
+        >
           {blog.comments.map((comment) => (
-            <li key={comment.id}>{comment.text}</li>
+            <ListItem key={comment.id}>
+              <ListItemText primary={comment.text} />
+            </ListItem>
           ))}
-        </ul>
+        </List>
       )}
     </div>
   )
