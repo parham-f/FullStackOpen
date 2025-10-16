@@ -1,11 +1,26 @@
 import { useQuery } from "@apollo/client/react"
-import { ALL_AUTHORS } from "../queries"
+import { ALL_AUTHORS, EDIT_AUTHOR } from "../queries"
+import { useMutation } from "@apollo/client/react"
+import { useState } from "react"
 
 const AuthorsView = () => {
+  const [selectedAuthor, setSelectedAuthor] = useState("")
+  const [bornIn, setBornIn] = useState("")
+
   const result = useQuery(ALL_AUTHORS)
+
+  const [editAuthor] = useMutation(EDIT_AUTHOR)
 
   if (result.loading) {
     return <div>loading...</div>
+  }
+
+  const submit = (event) => {
+    event.preventDefault()
+
+    editAuthor({
+      variables: { name: selectedAuthor, setBornTo: Number(bornIn) },
+    })
   }
 
   return (
@@ -29,6 +44,32 @@ const AuthorsView = () => {
           ))}
         </tbody>
       </table>
+
+      <h2>Set Birthday</h2>
+      <form onSubmit={submit}>
+        Select author:{" "}
+        <select
+          onChange={({ target }) => setSelectedAuthor(target.value)}
+          defaultValue="default"
+        >
+          <option value="default" disabled>
+            Author name
+          </option>
+          {result.data.allAuthors.map((a) => (
+            <option key={a.id} value={a.name}>
+              {a.name}
+            </option>
+          ))}
+        </select>
+        <br></br>
+        Born in:{" "}
+        <input
+          value={bornIn}
+          onChange={({ target }) => setBornIn(target.value)}
+        />
+        <br></br>
+        <button type="submit">Update Author</button>
+      </form>
     </div>
   )
 }

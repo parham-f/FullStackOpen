@@ -16,9 +16,8 @@ const BookForm = () => {
   const submit = (event) => {
     event.preventDefault()
 
-    const intPublished = Number(published)
     createBook({
-      variables: { title, author, published: intPublished, genres },
+      variables: { title, author, published: Number(published), genres },
     })
 
     setTitle("")
