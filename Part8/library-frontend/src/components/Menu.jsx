@@ -12,6 +12,9 @@ const Menu = () => {
       <Link to="/books" style={padding}>
         Books
       </Link>
+      <Link to="/new-book" style={padding}>
+        New Book
+      </Link>
     </div>
   )
 }
