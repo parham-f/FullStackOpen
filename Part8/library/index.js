@@ -1,6 +1,6 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
-const { v1: uuid } = require('uuid')
+const { GraphQLError } = require('graphql')
 
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
@@ -95,9 +95,17 @@ const resolvers = {
 
   Mutation: {
     addBook: async (root, args) => {
-        let author = await Author.findOne({ name: args.author });
+        let author = await Author.findOne({ name: args.author })
         if (!author) {
-          author = await new Author({ name: args.author }).save();
+          try {
+            author = await new Author({ name: args.author }).save()
+          } catch (error) {
+            throw new GraphQLError('Saving book failed', {
+              extensions: {
+                code: 'BAD_USER_INPUT',
+                invalidArgs: args.name,
+                error
+              }})}
         }
 
         const book = new Book({
@@ -106,16 +114,40 @@ const resolvers = {
           genres: args.genres,
           author: author._id,
         })
-        await book.save()
+        try {
+          await book.save()
+        } catch (error) {
+            throw new GraphQLError('Saving book failed', {
+              extensions: {
+                code: 'BAD_USER_INPUT',
+                invalidArgs: args.name,
+                error
+              }})}
         return book.populate('author')
     },
 
     editAuthor: async (root, { name, setBornTo }) => {
+      try {
         const updated = await Author.findOneAndUpdate(
           { name },
-          { born: setBornTo }
-        )
-      return updated
+          { born: setBornTo })
+
+        if(!updated) {
+          throw new GraphQLError('Author not found', {
+              extensions: {
+                code: 'BAD_USER_INPUT',
+              }})
+        }
+
+        return updated
+
+      } catch (error) {
+            throw new GraphQLError('Editing author failed', {
+              extensions: {
+                code: 'BAD_USER_INPUT',
+                invalidArgs: name,
+                error
+              }})}
     }
   }
 }
