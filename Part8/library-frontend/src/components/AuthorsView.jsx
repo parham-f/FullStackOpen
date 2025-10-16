@@ -13,7 +13,7 @@ const AuthorsView = () => {
       <h1>Authors</h1>
       <table>
         <thead>
-          <tr>
+          <tr style={{ textAlign: "left" }}>
             <th>Name</th>
             <th>Born</th>
             <th>Books</th>
