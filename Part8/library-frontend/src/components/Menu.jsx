@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom"
+import { useApolloClient } from "@apollo/client/react"
 
-const Menu = () => {
+const Menu = ({ token, setToken }) => {
   const padding = {
     paddingRight: 5,
   }
+
+  const client = useApolloClient()
+
   return (
     <div>
       <Link to="/" style={padding}>
@@ -12,9 +16,27 @@ const Menu = () => {
       <Link to="/books" style={padding}>
         Books
       </Link>
-      <Link to="/new-book" style={padding}>
-        New Book
-      </Link>
+      {!token && (
+        <Link to="/login" style={padding}>
+          Login
+        </Link>
+      )}
+      {token && (
+        <>
+          <Link to="/new-book" style={padding}>
+            New Book
+          </Link>
+          <button
+            onClick={() => {
+              window.localStorage.removeItem("library-user-token")
+              setToken(null)
+              client.resetStore()
+            }}
+          >
+            Logout
+          </button>
+        </>
+      )}
     </div>
   )
 }
