@@ -10,6 +10,7 @@ const resolvers = require('./resolvers')
 const jwt = require('jsonwebtoken')
 const { WebSocketServer } = require('ws')
 const { useServer } = require('graphql-ws/use/ws')
+const { makeBookCountLoader } = require('./bookCountLoader')
 
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
@@ -35,9 +36,43 @@ const start = async () => {
     path: '/',
   })
   
-  
   const schema = makeExecutableSchema({ typeDefs, resolvers })
-  const serverCleanup = useServer({ schema }, wsServer)
+
+  const wsCleanup = useServer(
+  {
+    schema,
+    keepAlive: 15000,
+    context: async (ctx) => {
+      const raw =
+        ctx.connectionParams?.authorization ||
+        ctx.connectionParams?.Authorization ||
+        null;
+      const token = raw?.replace(/^Bearer\s+/i, '') || null;
+
+      let currentUser = null;
+      if (token) {
+        try {
+          const decoded = jwt.verify(token, JWT_SECRET);
+          currentUser = await User.findById(decoded.id);
+        } catch {
+          console.log('WS auth token invalid/expired (proceeding as anon)');
+        }
+      }
+
+      return {
+        currentUser,
+        loaders: { bookCount: makeBookCountLoader() },
+      };
+    },
+    onError: (_ctx, _msg, _args, errors) => {
+      console.error('WS onError', errors);
+    },
+    onNext: (_ctx, _msg, _args, _result) => {
+      console.log('WS onNext result sent');
+    },
+  },
+  wsServer
+);
 
   const server = new ApolloServer({
     schema,
@@ -47,7 +82,7 @@ const start = async () => {
         async serverWillStart() {
           return {
             async drainServer() {
-              await serverCleanup.dispose();
+              await wsCleanup.dispose();
             },
           };
         },
@@ -67,7 +102,12 @@ const start = async () => {
         if (auth && auth.startsWith('Bearer ')) {
           const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
           const currentUser = await User.findById(decodedToken.id)
-          return { currentUser }
+           return {
+          currentUser,
+          loaders: {
+            bookCount: makeBookCountLoader(),
+          },
+        }
         }
       },
     }),

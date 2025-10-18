@@ -52,7 +52,17 @@ const resolvers = {
   },
 
   Author: {
-    bookCount: async (author) => Book.countDocuments({ author: author._id })
+    // bookCount: (author, _args, { loaders }) => loaders.bookCount.load(author._id),
+    bookCount: async (author, _args, ctx) => {
+      try {
+        const loader = ctx?.loaders?.bookCount;
+        if (!loader) return 0; // 👈 stay safe for anon/misconfig
+        return await loader.load(author._id);
+      } catch (e) {
+        console.error('bookCount resolver error:', e);
+        return 0; // 👈 never throw from field resolver
+      }
+    },
   },
 
   Mutation: {
@@ -97,9 +107,10 @@ const resolvers = {
 
         pubsub.publish('BOOK_ADDED', {bookAdded: book})
 
-        const populated = await book.populate('author')
-        pubsub.publish('BOOK_ADDED', { bookAdded: populated })
-        return populated
+        const saved = await (await new Book({ ...args }).save()).populate('author');
+        console.log('🔔 publishing BOOK_ADDED:', saved.title);
+        await pubsub.publish('BOOK_ADDED', { bookAdded: saved });
+        return saved
     },
 
     editAuthor: async (root, { name, setBornTo }, context) => {

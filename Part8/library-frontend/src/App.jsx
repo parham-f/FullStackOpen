@@ -7,37 +7,69 @@ import Login from "./components/Login"
 import Recommended from "./components/Recommended"
 import { useState, useEffect, useRef } from "react"
 import { useSubscription, useApolloClient } from "@apollo/client/react"
-import { BOOK_ADDED, ALL_BOOKS } from "./queries"
+import { BOOK_ADDED } from "./queries"
+import { gql } from "@apollo/client"
 
 const App = () => {
   const [token, setToken] = useState(null)
   const [genres, setGenres] = useState([])
-
-  const seenIds = useRef(new Set())
-
   const client = useApolloClient()
 
+  const seen = useRef(new Set())
+
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("library-user-token")
-    if (loggedUserJSON) {
-      setToken(loggedUserJSON)
-    }
+    const t = window.localStorage.getItem("library-user-token")
+    if (t) setToken(t)
   }, [])
+
+  useEffect(() => {
+    if (token) client.resetStore().catch(() => {})
+  }, [token, client])
+
+  const NEW_BOOK_FRAGMENT = gql`
+    fragment NewBook on Book {
+      id
+      title
+      published
+      genres
+      author {
+        id
+        name
+      }
+    }
+  `
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
+      console.log("📡 BOOK_ADDED payload:", data)
       const book = data?.data?.bookAdded
       if (!book) return
 
-      if (seenIds.current.has(book.id)) return
-      seenIds.current.add(book.id)
+      const id = book.id
+      if (seen.current.has(id)) return
+      seen.current.add(id)
 
       window.alert(`${book.title} by ${book.author?.name} Added.`)
 
-      client.cache.updateQuery({ query: ALL_BOOKS }, (existing) => {
-        if (!existing?.allBooks) return { allBooks: [book] }
-        if (existing.allBooks.some((b) => b.id === book.id)) return existing
-        return { allBooks: existing.allBooks.concat(book) }
+      client.cache.modify({
+        id: client.cache.identify({ __typename: "Query" }),
+        fields: {
+          allBooks(existingRefs = [], { readField, toReference, args }) {
+            if (args?.genre && !book.genres?.includes(args.genre))
+              return existingRefs
+            if (existingRefs.some((ref) => readField("id", ref) === id))
+              return existingRefs
+
+            const newRef =
+              toReference({ __typename: "Book", id }) ||
+              client.cache.writeFragment({
+                fragment: NEW_BOOK_FRAGMENT,
+                data: book,
+              })
+
+            return [...existingRefs, newRef]
+          },
+        },
       })
     },
   })

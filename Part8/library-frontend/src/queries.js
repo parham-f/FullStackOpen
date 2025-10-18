@@ -26,10 +26,15 @@ query {
 export const ALL_BOOKS = gql`
 query {
     allBooks {
-        ...BookDetails
+        title
+    published
+    genres
+    author {
+      name
+    }
+    id
   }
 }
-  ${BOOK_DETAILS}
 `
 
 export const ALL_BOOK_GENRE = gql`
@@ -125,18 +130,13 @@ export const REMOVE_FAVORITE_GENRE = gql`
 `
 
 export const BOOK_ADDED = gql`
-  subscription {
+  subscription BookAdded {
     bookAdded {
       id
       title
       published
       genres
-      author {
-        id
-        name
-        born
-        bookCount
-      }
+      author { id name }
     }
   }
 `

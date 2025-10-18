@@ -7,19 +7,23 @@ const AuthorsView = ({ token }) => {
   const [selectedAuthor, setSelectedAuthor] = useState("")
   const [bornIn, setBornIn] = useState("")
 
-  const result = useQuery(ALL_AUTHORS)
+  const { data, loading, error } = useQuery(ALL_AUTHORS, {
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+  })
+  if (error) console.error("ALL_AUTHORS error:", error)
+
+  const authors = (data?.allAuthors ?? []).filter(Boolean)
 
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   })
 
-  if (result.loading) {
-    return <div>loading...</div>
-  }
+  if (loading) return <div>loading...</div>
 
-  const submit = (event) => {
-    event.preventDefault()
-
+  const submit = (e) => {
+    e.preventDefault()
+    if (!selectedAuthor || !bornIn) return
     editAuthor({
       variables: { name: selectedAuthor, setBornTo: Number(bornIn) },
     })
@@ -39,10 +43,10 @@ const AuthorsView = ({ token }) => {
           </tr>
         </thead>
         <tbody>
-          {result.data.allAuthors.map((a) => (
-            <tr key={a.id}>
+          {authors.map((a) => (
+            <tr key={a.id ?? a.name}>
               <td>{a.name}</td>
-              <td>{a.born}</td>
+              <td>{a.born ?? "-"}</td>
               <td>{a.bookCount}</td>
             </tr>
           ))}
@@ -55,25 +59,26 @@ const AuthorsView = ({ token }) => {
           <form onSubmit={submit}>
             Select author:{" "}
             <select
+              value={selectedAuthor || "default"}
               onChange={({ target }) => setSelectedAuthor(target.value)}
-              defaultValue="default"
             >
               <option value="default" disabled>
                 Author name
               </option>
-              {result.data.allAuthors.map((a) => (
-                <option key={a.id} value={a.name}>
+              {authors.map((a) => (
+                <option key={a.id ?? a.name} value={a.name}>
                   {a.name}
                 </option>
               ))}
             </select>
-            <br></br>
+            <br />
             Born in:{" "}
             <input
               value={bornIn}
               onChange={({ target }) => setBornIn(target.value)}
+              type="number"
             />
-            <br></br>
+            <br />
             <button type="submit">Update Author</button>
           </form>
         </>

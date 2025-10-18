@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useMutation } from "@apollo/client/react"
-import { CREATE_BOOK, ALL_BOOKS, ALL_BOOK_GENRE } from "../queries"
+import { CREATE_BOOK } from "../queries"
+import { gql } from "@apollo/client"
 
 const BookForm = () => {
   const [title, setTitle] = useState("")
@@ -9,12 +10,44 @@ const BookForm = () => {
   const [genres, setGenres] = useState([])
   const [singleGenre, setSingleGenre] = useState("")
 
+  const NEW_BOOK_FRAGMENT = gql`
+    fragment NewBook on Book {
+      id
+      title
+      published
+      genres
+      author {
+        id
+        name
+      }
+    }
+  `
+
   const [createBook] = useMutation(CREATE_BOOK, {
-    update: (cache, response) => {
-      cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
-        return {
-          allBooks: allBooks.concat(response.data.addBook),
-        }
+    update(cache, { data }) {
+      const book = data?.addBook // or whatever your field is called
+      if (!book) return
+
+      cache.modify({
+        id: cache.identify({ __typename: "Query" }),
+        fields: {
+          // Works for all active allBooks caches, including genre-filtered ones
+          allBooks(existingRefs = [], { readField, toReference, args }) {
+            // If you use keyArgs: ['genre'], only insert when this list's genre matches
+            if (args?.genre && !book.genres?.includes(args.genre))
+              return existingRefs
+
+            const id = book.id
+            if (existingRefs.some((ref) => readField("id", ref) === id))
+              return existingRefs
+
+            const newRef =
+              toReference({ __typename: "Book", id }) ||
+              cache.writeFragment({ fragment: NEW_BOOK_FRAGMENT, data: book })
+
+            return [...existingRefs, newRef]
+          },
+        },
       })
     },
   })
