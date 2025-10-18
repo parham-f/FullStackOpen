@@ -23,6 +23,7 @@ mongoose.connect(MONGODB_URI)
 const typeDefs = `
   type User {
     username: String!
+    favoriteGenres: [String!]!
     id: ID!
   }
 
@@ -49,6 +50,7 @@ const typeDefs = `
     authorCount: Int!
     bookCount: Int!
     allBooks(author: String, genre: String): [Book!]!
+    recommendedBooks: [Book!]!
     allAuthors: [Author!]!
     me: User
   }
@@ -74,6 +76,10 @@ const typeDefs = `
       username: String!
       password: String!
     ): Token
+
+    setFavoriteGenres(genres: [String!]!): User!
+    addFavoriteGenre(genre: String!): User!
+    removeFavoriteGenre(genre: String!): User!
   }
 `
 
@@ -102,7 +108,17 @@ const resolvers = {
     },
 
     allAuthors: async () => Author.find({}),
-    me: (root, args, context) => context.currentUser
+    me: (root, args, context) => context.currentUser,
+
+    recommendedBooks: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new GraphQLError('Not authenticated', { extensions: { code: 'UNAUTHENTICATED' }})
+      }
+      if (!currentUser.favoriteGenres?.length) return []
+      return Book
+        .find({ genres: { $in: currentUser.favoriteGenres } })
+        .populate('author')
+    },
   },
 
   Book: {
@@ -223,8 +239,33 @@ const resolvers = {
       }
 
       return {value: jwt.sign(userForToken, process.env.JWT_SECRET)}
-    }
-  }
+    },
+
+    setFavoriteGenres: async (root, { genres }, { currentUser }) => {
+      if (!currentUser) throw new GraphQLError('Not authenticated')
+      currentUser.favoriteGenres = Array.from(new Set(genres.map(g => g.trim()).filter(Boolean)))
+      await currentUser.save()
+      return currentUser
+    },
+
+    addFavoriteGenre: async (root, { genre }, { currentUser }) => {
+      if (!currentUser) throw new GraphQLError('Not authenticated')
+      const g = genre.trim()
+      if (g && !currentUser.favoriteGenres.includes(g)) {
+        currentUser.favoriteGenres.push(g)
+        await currentUser.save()
+      }
+      return currentUser
+    },
+
+    removeFavoriteGenre: async (root, { genre }, { currentUser }) => {
+      if (!currentUser) throw new GraphQLError('Not authenticated')
+      const g = genre.trim()
+      currentUser.favoriteGenres = currentUser.favoriteGenres.filter(x => x !== g)
+      await currentUser.save()
+      return currentUser
+    },
+  },
 }
 
 const server = new ApolloServer({

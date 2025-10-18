@@ -2,18 +2,21 @@ import { useQuery } from "@apollo/client/react"
 import { ALL_BOOKS, ALL_BOOK_GENRE } from "../queries"
 import { useState, useRef, useEffect } from "react"
 
-const BooksView = () => {
+const BooksView = ({ genres, setGenres }) => {
   const [genre, setGenre] = useState(null)
-  const [genres, setGenres] = useState([])
   const genresSetRef = useRef(false)
 
   const allBooksQ = useQuery(ALL_BOOKS, {
     skip: !!genre,
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   })
 
   const byGenreQ = useQuery(ALL_BOOK_GENRE, {
     variables: { genre },
     skip: !genre,
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   })
 
   useEffect(() => {
@@ -35,6 +38,12 @@ const BooksView = () => {
   return (
     <div>
       <h1>Books</h1>
+      <button onClick={() => setGenre(null)}>All Genres</button>
+      {genres.map((g) => (
+        <button key={g} onClick={() => setGenre(g)}>
+          {g}
+        </button>
+      ))}
       <table>
         <thead>
           <tr style={{ textAlign: "left" }}>
@@ -53,12 +62,6 @@ const BooksView = () => {
           ))}
         </tbody>
       </table>
-      <button onClick={() => setGenre(null)}>All Genres</button>
-      {genres.map((g) => (
-        <button key={g} onClick={() => setGenre(g)}>
-          {g}
-        </button>
-      ))}
     </div>
   )
 }

@@ -71,3 +71,53 @@ export const LOGIN = gql`
         }
     }
 `
+
+export const ME = gql`
+  query Me {
+    me {
+      id
+      username
+      favoriteGenres
+    }
+  }
+`
+
+export const RECOMMENDED_BOOKS = gql`
+  query RecommendedBooks {
+    recommendedBooks {
+      id
+      title
+      published
+      genres
+      author { id name }
+    }
+  }
+`
+
+export const SET_FAVORITE_GENRES = gql`
+  mutation SetFavoriteGenres($genres: [String!]!) {
+    setFavoriteGenres(genres: $genres) {
+      id
+      username
+      favoriteGenres
+    }
+  }
+`
+
+export const ADD_FAVORITE_GENRE = gql`
+  mutation AddFavoriteGenre($genre: String!) {
+    addFavoriteGenre(genre: $genre) {
+      id
+      favoriteGenres
+    }
+  }
+`
+
+export const REMOVE_FAVORITE_GENRE = gql`
+  mutation RemoveFavoriteGenre($genre: String!) {
+    removeFavoriteGenre(genre: $genre) {
+      id
+      favoriteGenres
+    }
+  }
+`

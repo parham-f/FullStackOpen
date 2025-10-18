@@ -26,6 +26,9 @@ const Menu = ({ token, setToken }) => {
           <Link to="/new-book" style={padding}>
             New Book
           </Link>
+          <Link to="/recommended" style={padding}>
+            Recommended
+          </Link>
           <button
             onClick={() => {
               window.localStorage.removeItem("library-user-token")
