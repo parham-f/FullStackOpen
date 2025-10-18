@@ -7,7 +7,7 @@ import Login from "./components/Login"
 import Recommended from "./components/Recommended"
 import { useState, useEffect, useRef } from "react"
 import { useSubscription, useApolloClient } from "@apollo/client/react"
-import { BOOK_ADDED } from "./queries"
+import { BOOK_ADDED, ALL_BOOKS } from "./queries"
 
 const App = () => {
   const [token, setToken] = useState(null)
@@ -33,6 +33,12 @@ const App = () => {
       seenIds.current.add(book.id)
 
       window.alert(`${book.title} by ${book.author?.name} Added.`)
+
+      client.cache.updateQuery({ query: ALL_BOOKS }, (existing) => {
+        if (!existing?.allBooks) return { allBooks: [book] }
+        if (existing.allBooks.some((b) => b.id === book.id)) return existing
+        return { allBooks: existing.allBooks.concat(book) }
+      })
     },
   })
 
