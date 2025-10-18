@@ -97,7 +97,9 @@ const resolvers = {
 
         pubsub.publish('BOOK_ADDED', {bookAdded: book})
 
-        return book.populate('author')
+        const populated = await book.populate('author')
+        pubsub.publish('BOOK_ADDED', { bookAdded: populated })
+        return populated
     },
 
     editAuthor: async (root, { name, setBornTo }, context) => {
@@ -195,7 +197,7 @@ const resolvers = {
 
   Subscription: {
     bookAdded: {
-      subscribe: () => pubsub.asyncIterableIterator('BOOK_ADDED')
+      subscribe: () => pubsub.asyncIterableIterator(['BOOK_ADDED'])
     }
   }
 }

@@ -123,3 +123,20 @@ export const REMOVE_FAVORITE_GENRE = gql`
     }
   }
 `
+
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      id
+      title
+      published
+      genres
+      author {
+        id
+        name
+        born
+        bookCount
+      }
+    }
+  }
+`
