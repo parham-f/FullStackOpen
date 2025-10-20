@@ -32,19 +32,19 @@ export const bmiCalculator = (inputHeight: number, inputWeight: number) => {
   if (Number.isNaN(inputHeight) || Number.isNaN(inputWeight)) {
     return {
       error: 'Provided values were not numbers!'
-    }
+    };
   }
   if (inputHeight <= 0 || inputWeight <= 0) {
     return {
       error: 'Height and weight must be > 0'
-    }
+    };
   }
   const bmi = calculateBmi(inputHeight, inputWeight);
   return {
     weight: inputWeight,
     height: inputHeight,
     bmi: bmi
-  }
+  };
 };
 
 if (require.main === module) {

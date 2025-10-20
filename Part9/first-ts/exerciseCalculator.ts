@@ -22,11 +22,11 @@ const parseArguments = (args: string[]): ExerciseValues => {
     return {
       target: Number(args[2]),
       days: args.slice(3).map(a => Number(a))
-    }
+    };
   } else {
     throw new Error('Provided values were not numbers!');
   }
-}
+};
 
 const calculateExercises = (exDays: number[], target: number): Result => {
     const datCount = exDays.length;
@@ -54,18 +54,18 @@ const calculateExercises = (exDays: number[], target: number): Result => {
         ratingDescription: ratingDescription,
         target: target,
         average: average
-    }
-}
+    };
+};
 
 try {
   const { target, days } = parseArguments(process.argv);
   console.log(calculateExercises(days, target));    
 } catch (error: unknown) {
-  let errorMessage = 'Something bad happened.'
+  let errorMessage = 'Something bad happened.';
   if (error instanceof Error) {
     errorMessage += ' Error: ' + error.message;
   }
   console.log(errorMessage);
 }
 
-export {}
+export {};

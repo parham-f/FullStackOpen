@@ -10,7 +10,7 @@ app.get('/hello', (_req, res) => {
 app.get('/bmi', (req, res) => {
   const height = req.query.height;
   const weight = req.query.weight;
-  res.send(bmiCalculator(Number(height), Number(weight)))
+  res.send(bmiCalculator(Number(height), Number(weight)));
 });
 
 const PORT = 3003;
