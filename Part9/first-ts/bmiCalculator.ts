@@ -4,38 +4,57 @@ interface BmiValues {
 }
 
 const parseArguments = (args: string[]): BmiValues => {
-  if (args.length < 4) throw new Error('Not enough arguments');
-  if (args.length > 4) throw new Error('Too many arguments');
+  if (args.length !== 4) {
+    throw new Error('Usage: node bmiCalculator.js <height_cm> <weight_kg>');
+  }
 
-  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
-    return {
-      height: Number(args[2]),
-      weight: Number(args[3])
-    }
-  } else {
+  const height = Number(args[2]);
+  const weight = Number(args[3]);
+
+  if (Number.isNaN(height) || Number.isNaN(weight)) {
     throw new Error('Provided values were not numbers!');
   }
-}
+
+  return { height, weight };
+};
 
 
-const calculateBmi = (height: number, weight: number): string | undefined => {
-    const bmi = weight / ((height/100) ** 2);
-    if(bmi < 18.5) return "Underweight";
-    else if(bmi < 24.9) return "Normal range";
-    else if(bmi < 29.9) return "Overweight";
-    else if(height <= 0) return "Height can not be zero or negative!";
-    return undefined;
-}
+const calculateBmi = (height: number, weight: number): string => {
+  const bmi = weight / ((height / 100) ** 2);
 
-try {
-  const { height, weight } = parseArguments(process.argv);
-  console.log(calculateBmi(height, weight));
-} catch (error: unknown) {
-  let errorMessage = 'Something bad happened.'
-  if (error instanceof Error) {
-    errorMessage += ' Error: ' + error.message;
+  if (bmi < 18.5) return 'Underweight';
+  if (bmi < 25) return 'Normal range';
+  if (bmi < 30) return 'Overweight';
+  return 'Obese';
+};
+
+export const bmiCalculator = (inputHeight: number, inputWeight: number) => {
+  if (Number.isNaN(inputHeight) || Number.isNaN(inputWeight)) {
+    return {
+      error: 'Provided values were not numbers!'
+    }
   }
-  console.log(errorMessage);
-}
+  if (inputHeight <= 0 || inputWeight <= 0) {
+    return {
+      error: 'Height and weight must be > 0'
+    }
+  }
+  const bmi = calculateBmi(inputHeight, inputWeight);
+  return {
+    weight: inputWeight,
+    height: inputHeight,
+    bmi: bmi
+  }
+};
 
-export {}
+if (require.main === module) {
+  try {
+    const { height, weight } = parseArguments(process.argv);
+    console.log(calculateBmi(height, weight));
+  } catch (error: unknown) {
+    let msg = 'Something bad happened.';
+    if (error instanceof Error) msg += ' Error: ' + error.message;
+    console.error(msg);
+    process.exitCode = 1;
+  }
+}
