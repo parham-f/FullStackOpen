@@ -1,8 +1,3 @@
-interface ExerciseValues {
-  target: number;
-  days: number[];
-}
-
 interface Result {
     periodLength: number;
     trainingDays: number;
@@ -12,21 +7,6 @@ interface Result {
     target: number;
     average: number;
 }
-
-const parseArguments = (args: string[]): ExerciseValues => {
-  if (args.length < 4) throw new Error('Not enough arguments');
-
-  const argsAsNumber = args.slice(2).map(a => Number(a)).includes(NaN);
-
-  if (!argsAsNumber) {      
-    return {
-      target: Number(args[2]),
-      days: args.slice(3).map(a => Number(a))
-    };
-  } else {
-    throw new Error('Provided values were not numbers!');
-  }
-};
 
 const calculateExercises = (exDays: number[], target: number): Result => {
     const datCount = exDays.length;
@@ -57,15 +37,24 @@ const calculateExercises = (exDays: number[], target: number): Result => {
     };
 };
 
-try {
-  const { target, days } = parseArguments(process.argv);
-  console.log(calculateExercises(days, target));    
-} catch (error: unknown) {
-  let errorMessage = 'Something bad happened.';
-  if (error instanceof Error) {
-    errorMessage += ' Error: ' + error.message;
+export const exerciseCalculator = (target: number, days: number[]) => {
+  try {
+    if(!target || !days) {
+      return {
+        error: 'parameters missing'
+      };
+    }
+    if(isNaN(Number(target)) || days.map(a => Number(a)).includes(NaN)) {
+      return {
+        error: 'malformed parameters'
+      };
+    };
+    return calculateExercises(days, target);    
+  } catch (error: unknown) {
+    let errorMessage = 'Something bad happened.';
+    if (error instanceof Error) {
+      errorMessage += ' Error: ' + error.message;
+    }
+    return errorMessage;
   }
-  console.log(errorMessage);
-}
-
-export {};
+};
