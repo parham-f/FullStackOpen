@@ -1,5 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const utils_1 = __importDefault(require("../src/utils"));
 const data = [
     {
         "id": "d2773336-f723-11e9-8f0b-362b9e155667",
@@ -42,4 +46,9 @@ const data = [
         "occupation": "Digital evangelist"
     }
 ];
-exports.default = data;
+const patientEntries = data.map(obj => {
+    const object = (0, utils_1.default)(obj);
+    object.id = obj.id;
+    return object;
+});
+exports.default = patientEntries;

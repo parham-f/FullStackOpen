@@ -25,6 +25,6 @@ const addPatient = (entry: NewPatientEntry): PatientsEntry => {
     };
     patients.push(newPatientEntry);
     return newPatientEntry;
-}
+};
 
 export default {getEntries, getNoSsnPatientsEntries, addPatient};
