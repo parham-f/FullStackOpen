@@ -20,7 +20,6 @@ function App() {
       <DiaryList diaries={diaries}/>
       <h2>Add New Entry</h2>
       <DiaryForm diaries={diaries} setDiaries={setDiaries}/>
-      
     </div>
   );
 }
