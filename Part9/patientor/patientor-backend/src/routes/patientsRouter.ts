@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import patientsService from '../services/patientsService';
 import {NewEntrySchema} from '../utils';
-import { NewPatientEntry, PatientsEntry } from '../types';
+import { NewPatientEntry, NonSensitivePatient } from '../types';
 import { z } from 'zod';
 
 const router = express.Router();
@@ -24,10 +24,14 @@ const errorMiddleware = (error: unknown, _req: Request, res: Response, next: Nex
 };
 
 router.get('/', (_req, res) => {
-  res.send(patientsService.getNoSsnPatientsEntries());
+  res.send(patientsService.getEntries());
 });
 
-router.post('/', newPatientParser, (req: Request<unknown, unknown, NewPatientEntry>, res: Response<PatientsEntry>) => {
+router.get('/:id', (req, res) => {
+  res.json(patientsService.getEntryById(req.params.id));
+});
+
+router.post('/', newPatientParser, (req: Request<unknown, unknown, NewPatientEntry>, res: Response<NonSensitivePatient>) => {
   const addedEntry = patientsService.addPatient(req.body);
   res.json(addedEntry);
 });
