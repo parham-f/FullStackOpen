@@ -43,9 +43,49 @@ const DiaryForm = ({diaries, setDiaries}: {diaries: DiaryEntry[], setDiaries: Re
         <>
             <p style={{color: 'red'}}>{notification}</p>
             <form onSubmit={submit}>
-                <p>Date: <input value={newDate} onChange={(event) => setNewDate(event.target.value)}/></p>
-                <p>Visibility: <input value={newVisibility} onChange={(event) => setNewVisibility(event.target.value)}/></p>
-                <p>Weather: <input value={newWeather} onChange={(event) => setNewWeather(event.target.value)}/></p>
+                <p>Date: <input type='date' value={newDate} onChange={(event) => setNewDate(event.target.value)}/></p>
+                <p>
+                    Visibility: 
+                    <label>
+                        <input name="visibility" type='radio' checked={newVisibility === 'great'} onChange={() => setNewVisibility('great')}/>
+                        Great
+                    </label>
+                    <label>
+                        <input name="visibility" type='radio' checked={newVisibility === 'good'} onChange={() => setNewVisibility('good')}/>
+                        Good
+                    </label>
+                    <label>
+                        <input name="visibility" type='radio' checked={newVisibility === 'ok'} onChange={() => setNewVisibility('ok')}/>
+                        OK
+                    </label>
+                    <label>
+                        <input name="visibility" type='radio' checked={newVisibility === 'poor'} onChange={() => setNewVisibility('poor')}/>
+                        Poor
+                    </label>
+                </p>
+                <p>
+                    Weather: 
+                    <label>
+                        <input name="weather" type='radio' checked={newWeather === 'sunny'} onChange={() => setNewWeather('sunny')}/>
+                        Sunny
+                    </label>
+                    <label>
+                        <input name="weather" type='radio' checked={newWeather === 'rainy'} onChange={() => setNewWeather('rainy')}/>
+                        Rainy
+                    </label>
+                    <label>
+                        <input name="weather" type='radio' checked={newWeather === 'cloudy'} onChange={() => setNewWeather('cloudy')}/>
+                        Cloudy
+                    </label>
+                    <label>
+                        <input name="weather" type='radio' checked={newWeather === 'stormy'} onChange={() => setNewWeather('stormy')}/>
+                        Stormy
+                    </label>
+                    <label>
+                        <input name="weather" type='radio' checked={newWeather === 'windy'} onChange={() => setNewWeather('windy')}/>
+                        Windy
+                    </label>
+                </p>
                 <p>Comment: <input value={newComment} onChange={(event) => setNewComment(event.target.value)}/></p>
                 <button type='submit'>Add</button>
             </form>

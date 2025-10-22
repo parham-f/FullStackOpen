@@ -16,10 +16,10 @@ function App() {
 
   return (
     <div>
-      <h2>Diary Entries</h2>
-      <DiaryList diaries={diaries}/>
       <h2>Add New Entry</h2>
       <DiaryForm diaries={diaries} setDiaries={setDiaries}/>
+      <h2>Diary Entries</h2>
+      <DiaryList diaries={diaries}/>
     </div>
   );
 }
