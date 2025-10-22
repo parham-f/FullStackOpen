@@ -28,6 +28,17 @@ const SinglePatientView = ({patient}: {patient: Patient | null | undefined}) => 
             <p>Date of Birth: {patient.dateOfBirth}</p>
             <p>SSN: {patient.ssn}</p>
             <p>Occupation: {patient.occupation}</p>
+            <h3>Entries</h3>
+            {patient.entries.map(e => (
+                <div key={e.id}>
+                    <p>{e.date} {e.description}</p>
+                    <ul>
+                        {e.diagnosisCodes?.map((c, index) => (
+                            <li key={index}>{c}</li>
+                        ))}
+                    </ul>
+                </div>
+            ))}
         </div>
     );
 };
