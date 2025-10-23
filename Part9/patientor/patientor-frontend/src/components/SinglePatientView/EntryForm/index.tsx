@@ -25,7 +25,6 @@ const EntryForm = ({ patientId, onAdded }: EntryFormProps) => {
     const [employerName, setEmployerName] = useState<string>("");
     const [sickLeaveStartDate, setSickLeaveStartDate] = useState<string>("");
     const [sickLeaveEndDate, setSickLeaveEndDate] = useState<string>("");
-    const [, setError] = useState<string | null>(null);
     const [errors, setErrors] = useState<string[] | null>(null);
 
     const handleChange = (event: { target: { value: SetStateAction<string>; }; }) => {
@@ -67,7 +66,6 @@ const EntryForm = ({ patientId, onAdded }: EntryFormProps) => {
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         try {
-            setError(null);
             if (!patientId) throw new Error("Missing patient id in route");
 
             if (type === "Hospital") {
