@@ -1,7 +1,10 @@
-import { Patient, Diagnosis } from "../types";
+import { Patient, Diagnosis } from "../../types";
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
+import EntriesView from "./EntriesView";
+import { Button } from '@mui/material';
+
 
 const SinglePatientView = ({patient, diagnosis}: {patient: Patient | null | undefined, diagnosis: Diagnosis[] | undefined}) => {
     let genderIcon;
@@ -28,19 +31,10 @@ const SinglePatientView = ({patient, diagnosis}: {patient: Patient | null | unde
             <p>Date of Birth: {patient.dateOfBirth}</p>
             <p>SSN: {patient.ssn}</p>
             <p>Occupation: {patient.occupation}</p>
-            <h3>Entries</h3>
-            {patient.entries.map(e => (
-                <div key={e.id}>
-                    <p>{e.date} {e.description}</p>
-                    <ul>
-                        {e.diagnosisCodes?.map((c, index) => (
-                            <li key={index}>
-                                {c} {diagnosis?.find(d => d.code === c)?.name}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            ))}
+            <EntriesView patient={patient} diagnosis={diagnosis}/>
+            <Button variant="contained">
+                Add New Entry
+            </Button>
         </div>
     );
 };
