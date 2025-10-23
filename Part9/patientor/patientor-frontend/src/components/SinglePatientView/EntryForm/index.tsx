@@ -25,7 +25,7 @@ const EntryForm = ({ patientId, onAdded }: EntryFormProps) => {
     const [employerName, setEmployerName] = useState<string>("");
     const [sickLeaveStartDate, setSickLeaveStartDate] = useState<string>("");
     const [sickLeaveEndDate, setSickLeaveEndDate] = useState<string>("");
-    const [error, setError] = useState<string | null>(null);
+    const [, setError] = useState<string | null>(null);
     const [errors, setErrors] = useState<string[] | null>(null);
 
     const handleChange = (event: { target: { value: SetStateAction<string>; }; }) => {
