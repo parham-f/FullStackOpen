@@ -1,9 +1,9 @@
-import { Patient } from "../types";
+import { Patient, Diagnosis } from "../types";
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
 
-const SinglePatientView = ({patient}: {patient: Patient | null | undefined}) => {
+const SinglePatientView = ({patient, diagnosis}: {patient: Patient | null | undefined, diagnosis: Diagnosis[] | undefined}) => {
     let genderIcon;
     switch (patient?.gender) {
         case 'male':
@@ -34,7 +34,9 @@ const SinglePatientView = ({patient}: {patient: Patient | null | undefined}) => 
                     <p>{e.date} {e.description}</p>
                     <ul>
                         {e.diagnosisCodes?.map((c, index) => (
-                            <li key={index}>{c}</li>
+                            <li key={index}>
+                                {c} {diagnosis?.find(d => d.code === c)?.name}
+                            </li>
                         ))}
                     </ul>
                 </div>
